@@ -1856,534 +1856,534 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
         </main>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const navLinks = document.querySelectorAll('#navigation-menu a');
-        const contentSections = document.querySelectorAll('.content-section');
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('#navigation-menu a');
+    const contentSections = document.querySelectorAll('.content-section');
 
-        // Ensure core navigation elements are present before proceeding
-        if (navLinks.length === 0 || contentSections.length === 0) {
-            console.error("Critical error: Navigation links or content sections not found. Cannot set up navigation.");
-            return; // Exit if core navigation elements are missing
+    // Ensure core navigation elements are present before proceeding
+    if (navLinks.length === 0 || contentSections.length === 0) {
+        console.error("Critical error: Navigation links or content sections not found. Cannot set up navigation.");
+        return; // Exit if core navigation elements are missing
+    }
+
+    function navigateTo(hash) {
+        const targetElement = hash ? document.querySelector(hash) : document.querySelector('#cover-page');
+
+        // Robust handling for when targetElement is null
+        let effectiveTargetElement = targetElement;
+        if (!effectiveTargetElement) {
+            console.warn(`Could not find element for hash: ${hash}. Attempting to default to #cover-page.`);
+            effectiveTargetElement = document.querySelector('#cover-page');
+            if (!effectiveTargetElement) {
+                console.error("Critical error: #cover-page element not found in the document. Cannot proceed with navigation.");
+                // Ensure no further DOM operations are attempted if critical elements are missing
+                return;
+            }
         }
 
-        function navigateTo(hash) {
-            const targetElement = hash ? document.querySelector(hash) : document.querySelector('#cover-page');
+        let mainContentSection = effectiveTargetElement.closest('.content-section');
 
-            // Robust handling for when targetElement is null
-            let effectiveTargetElement = targetElement;
-            if (!effectiveTargetElement) {
-                console.warn(`Could not find element for hash: ${hash}. Attempting to default to #cover-page.`);
-                effectiveTargetElement = document.querySelector('#cover-page');
-                if (!effectiveTargetElement) {
-                    console.error("Critical error: #cover-page element not found in the document. Cannot proceed with navigation.");
-                    // Ensure no further DOM operations are attempted if critical elements are missing
+        // If closest() didn't find a parent .content-section, it means effectiveTargetElement
+        // itself *should* be a .content-section if it's a valid navigation target.
+        if (!mainContentSection) {
+            // Check if effectiveTargetElement itself has the 'content-section' class
+            if (effectiveTargetElement.classList.contains('content-section')) {
+                mainContentSection = effectiveTargetElement;
+            } else {
+                // This scenario means a nav link points to an element that is neither a content-section
+                // nor inside one. This indicates a potential misconfiguration in the navigation links.
+                console.error(`Navigation target '${hash}' is not a content-section and not within one. Falling back to #cover-page.`);
+                mainContentSection = document.querySelector('#cover-page');
+                if (!mainContentSection) {
+                    console.error("Critical error: #cover-page element not found after fallback. Cannot activate section.");
                     return;
                 }
             }
-
-            let mainContentSection = effectiveTargetElement.closest('.content-section');
-
-            // If closest() didn't find a parent .content-section, it means effectiveTargetElement
-            // itself *should* be a .content-section if it's a valid navigation target.
-            if (!mainContentSection) {
-                // Check if effectiveTargetElement itself has the 'content-section' class
-                if (effectiveTargetElement.classList.contains('content-section')) {
-                    mainContentSection = effectiveTargetElement;
-                } else {
-                    // This scenario means a nav link points to an element that is neither a content-section
-                    // nor inside one. This indicates a potential misconfiguration in the navigation links.
-                    console.error(`Navigation target '${hash}' is not a content-section and not within one. Falling back to #cover-page.`);
-                    mainContentSection = document.querySelector('#cover-page');
-                    if (!mainContentSection) {
-                        console.error("Critical error: #cover-page element not found after fallback. Cannot activate section.");
-                        return;
-                    }
-                }
-            }
-
-            // Deactivate all sections and links
-            contentSections.forEach(section => section.classList.remove('active'));
-            navLinks.forEach(link => link.classList.remove('active'));
-
-            // Activate the determined main content section
-            if (mainContentSection) {
-                mainContentSection.classList.add('active');
-            } else {
-                console.error("Logic error: mainContentSection is null after determination. Cannot activate section.");
-                return; // Prevent further errors
-            }
-
-
-            // Activate the corresponding nav link(s)
-            navLinks.forEach(link => {
-                if (link.getAttribute('href') === hash) {
-                    link.classList.add('active');
-                }
-                // Also activate the parent main nav link if a sub-link is clicked
-                // Ensure mainContentSection is not null before accessing its id
-                if (mainContentSection && link.getAttribute('href') === `#${mainContentSection.id}`) {
-                    link.classList.add('active');
-                }
-            });
-
-            // Let the browser handle the scroll to the specific hash ID
-            if (hash && effectiveTargetElement) {
-                effectiveTargetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
         }
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const hash = this.getAttribute('href');
-                window.history.pushState(null, '', hash);
-                navigateTo(hash);
-            });
-        });
+        // Deactivate all sections and links
+        contentSections.forEach(section => section.classList.remove('active'));
+        navLinks.forEach(link => link.classList.remove('active'));
 
-        window.addEventListener('popstate', () => {
-            navigateTo(window.location.hash);
-        });
-
-        // Initial load
-        navigateTo(window.location.hash || '#cover-page');
-
-        // Handshake visualization logic (updated with more steps)
-        let currentHandshakeStep = -1; // Start at -1 to show nothing initially
-        const handshakeMessages = document.querySelectorAll('.handshake-message');
-        const handshakeExplanation = document.getElementById('handshake-explanation');
-        const handshakeBtn = document.getElementById('handshake-btn');
-        const handshakeResetBtn = document.getElementById('handshake-reset-btn');
-
-        // Define handshakeStepsData here so it's accessible to updateHandshakeVisualization
-        const handshakeStepsData = [
-            { messageId: 'handshake-message-1', text: 'The client sends a "Hello" message, proposing TLS versions and cipher suites.' },
-            { messageId: 'handshake-message-2', text: 'The server replies with its "Hello", choosing a cipher suite.' },
-            { messageId: 'handshake-message-3', text: 'The server sends its certificate chain for client authentication.' },
-            { messageId: 'handshake-message-4', text: 'Server sends key exchange parameters (optional, for ephemeral key exchange).' },
-            { messageId: 'handshake-message-5', text: 'Server requests client certificate (optional, for mutual TLS).' },
-            { messageId: 'handshake-message-6', text: 'Server indicates completion of its hello messages.' },
-            { messageId: 'handshake-message-7', text: 'Client sends its certificate (optional, if requested).' },
-            { messageId: 'handshake-message-8', text: 'Client sends key exchange data (e.g., encrypted premaster secret).' },
-            { messageId: 'handshake-message-9', text: 'Client proves possession of its private key (optional).' },
-            { messageId: 'handshake-message-10', text: 'Client signals transition to encrypted communication.' },
-            { messageId: 'handshake-message-11', text: 'Server signals transition to encrypted communication.' },
-            { messageId: 'handshake-message-12', text: 'Client sends encrypted "Finished" message, verifying handshake.' },
-            { messageId: 'handshake-message-13', text: 'Server sends encrypted "Finished" message, verifying handshake.' }
-        ];
-
-        if (handshakeExplanation && handshakeBtn && handshakeResetBtn && handshakeMessages.length > 0) {
-            function updateHandshakeVisualization() {
-                handshakeMessages.forEach((msg, index) => {
-                    // Show current step
-                    if (index === currentHandshakeStep) {
-                        msg.classList.add('opacity-100');
-                        msg.classList.remove('opacity-0');
-                    } else {
-                        msg.classList.remove('opacity-100');
-                        msg.classList.add('opacity-0');
-                    }
-
-                    // For the final step, make all arrows visible
-                    if (currentHandshakeStep === handshakeStepsData.length - 1) {
-                        msg.classList.add('opacity-100'); // Ensure all messages are visible
-                        msg.classList.remove('opacity-0');
-                    }
-                });
-
-                if (currentHandshakeStep >= 0 && currentHandshakeStep < handshakeStepsData.length) {
-                    handshakeExplanation.textContent = handshakeStepsData[currentHandshakeStep].text;
-                } else {
-                    handshakeExplanation.textContent = 'Click "Next Step" to begin the handshake visualization.';
-                }
-
-                if (currentHandshakeStep === handshakeStepsData.length - 1) {
-                    handshakeBtn.disabled = true;
-                    handshakeBtn.textContent = 'Completed';
-                } else {
-                    handshakeBtn.disabled = false;
-                    handshakeBtn.textContent = 'Next Step';
-                }
-            }
-
-            // Initialize visualization
-            updateHandshakeVisualization();
-
-            handshakeBtn.addEventListener('click', () => {
-                if (currentHandshakeStep < handshakeStepsData.length - 1) {
-                    currentHandshakeStep++;
-                    updateHandshakeVisualization();
-                }
-            });
-
-            handshakeResetBtn.addEventListener('click', () => {
-                currentHandshakeStep = -1;
-                updateHandshakeVisualization();
-            });
+        // Activate the determined main content section
+        if (mainContentSection) {
+            mainContentSection.classList.add('active');
         } else {
-            console.warn("Handshake visualization elements not fully available. Handshake functionality disabled.");
+            console.error("Logic error: mainContentSection is null after determination. Cannot activate section.");
+            return; // Prevent further errors
         }
 
 
-        // SSL Certificate Viewer & Connection Simulator (Enhanced)
-        const liveTestBtn = document.getElementById('live-test-btn');
-        const liveUrlInput = document.getElementById('live-url-input');
-        const resultsContainer = document.getElementById('live-results-container');
+        // Activate the corresponding nav link(s)
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === hash) {
+                link.classList.add('active');
+            }
+            // Also activate the parent main nav link if a sub-link is clicked
+            // Ensure mainContentSection is not null before accessing its id
+            if (mainContentSection && link.getAttribute('href') === `#${mainContentSection.id}`) {
+                link.classList.add('active');
+            }
+        });
 
-        if (liveTestBtn && liveUrlInput && resultsContainer) {
-            liveTestBtn.addEventListener('click', () => {
-                const url = liveUrlInput.value.trim();
-                resultsContainer.innerHTML = `<div class="text-center p-4"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto"></div><p class="mt-2">Simulating connection to ${url}...</p></div>`;
+        // Let the browser handle the scroll to the specific hash ID
+        if (hash && effectiveTargetElement) {
+            effectiveTargetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
 
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const hash = this.getAttribute('href');
+            window.history.pushState(null, '', hash);
+            navigateTo(hash);
+        });
+    });
 
-                setTimeout(() => {
-                    let outputHtml = '';
-                    if (!url) {
-                        outputHtml = `
-                            <div class="border rounded-lg p-4 bg-red-50">
-                                <h4 class="font-bold text-red-800">Error: Invalid URL</h4>
-                                <p class="mt-2 text-sm">Please enter a valid URL (e.g., https://www.google.com).</p>
-                            </div>`;
-                    } else if (url.startsWith('http://')) {
-                        outputHtml = `
-                            <div class="border rounded-lg p-4 bg-yellow-50">
-                                <h4 class="font-bold text-yellow-800">Warning: Unencrypted Connection (HTTP)</h4>
-                                <p class="mt-2 text-sm">The URL you entered uses HTTP, which is not secure. Data sent over HTTP is unencrypted and vulnerable to eavesdropping and tampering. Always prefer HTTPS for secure communication.</p>
-                                <p class="mt-2 text-sm"><strong>Suggested Action:</strong> Try changing the URL to HTTPS (e.g., \`https://${url.substring(7)}\`) if the server supports it.</p>
-                            </div>`;
-                    } else if (url.includes('google.com') || url.includes('sap.com')) {
-                         outputHtml = `
-                            <div class="border rounded-lg p-4 bg-gray-50">
-                                <h4 class="font-bold text-green-700">✓ Secure Connection Simulated</h4>
-                                <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm">
-                                    <div><strong class="text-slate-600">Protocol:</strong> <span class="font-mono">TLS 1.3</span></div>
-                                    <div><strong class="text-slate-600">Cipher Suite:</strong> <span class="font-mono">TLS_AES_256_GCM_SHA384</span></div>
-                                    <div><strong class="text-slate-600">Key Exchange:</strong> <span class="font-mono">X25519</span></div>
-                                    <div><strong class="text-slate-600">Signature Algorithm:</strong> <span class="font-mono">RSA-PSS</span></div>
-                                </div>
-                                <div class="mt-4">
-                                    <strong class="text-slate-600">Certificate Chain:</strong>
-                                    <ol class="list-decimal list-inside mt-2 text-sm space-y-1">
-                                        <li><span class="font-mono">CN=*.${url.includes('google.com') ? 'google.com' : 'sap.com'}</span> (Issued by: GTS CA 1C3) <span class="text-green-600 font-semibold ml-2">✓ Valid</span></li>
-                                        <li><span class="font-mono">CN=GTS CA 1C3</span> (Issued by: GTS Root R1) <span class="text-green-600 font-semibold ml-2">✓ Trusted</span></li>
-                                        <li><span class="font-mono">CN=GTS Root R1</span> (Issued by: GlobalSign) <span class="text-green-600 font-semibold ml-2">✓ Trusted Root</span></li>
-                                    </ol>
-                                </div>
-                                <div class="mt-4">
-                                    <strong class="text-slate-600">Certificate Details:</strong>
-                                    <p class="text-sm"><strong>Issuer:</strong> CN=GTS CA 1C3, O=Google Trust Services LLC, C=US</p>
-                                    <p class="text-sm"><strong>Subject:</strong> CN=*.${url.includes('google.com') ? 'google.com' : 'sap.com'}, O=Google LLC, L=Mountain View, ST=California, C=US</p>
-                                    <p class="text-sm"><strong>Valid From:</strong> 2024-01-01 00:00:00 UTC</p>
-                                    <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
-                                    <p class="text-sm"><strong>Serial Number:</strong> 1234567890ABCDEF</p>
-                                    <p class="text-sm"><strong>Signature Algorithm:</strong> sha256WithRSAEncryption</p>
-                                    <p class="text-sm"><strong>Public Key Algorithm:</strong> id-ecPublicKey (256-bit)</p>
-                                </div>
-                            </div>`;
-                    } else if (url.includes('expired.badssl.com')) {
-                        outputHtml = `
-                            <div class="border rounded-lg p-4 bg-red-50">
-                                <h4 class="font-bold text-red-800">Error: Certificate Expired</h4>
-                                <p class="mt-2 text-sm">The server presented an SSL certificate that has expired. This indicates a severe security risk and prevents a secure connection.</p>
-                                <p class="mt-2 text-sm"><strong>Certificate Details:</strong></p>
-                                <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Intermediate Certificate Authority, O=BadSSL</p>
-                                <p class="text-sm"><strong>Subject:</strong> CN=expired.badssl.com, O=BadSSL</p>
-                                <p class="text-sm"><strong>Valid From:</strong> 2015-01-01 00:00:00 UTC</p>
-                                <p class="text-sm"><strong>Valid To:</strong> 2016-01-01 23:59:59 UTC <span class="text-red-600 font-semibold">(EXPIRED)</span></p>
-                                <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_DATE_INVALID</p>
-                                <p class="mt-2 text-sm"><strong>Suggested Action:</strong> The server administrator must renew the certificate.</p>
-                            </div>`;
-                    } else if (url.includes('untrusted-root.badssl.com')) {
-                        outputHtml = `
-                            <div class="border rounded-lg p-4 bg-red-50">
-                                <h4 class="font-bold text-red-800">Error: Untrusted Certificate Authority</h4>
-                                <p class="mt-2 text-sm">The server's certificate is issued by an authority that is not trusted by your system. This often happens with self-signed certificates or certificates issued by private/internal CAs not recognized publicly.</p>
-                                <p class="mt-2 text-sm"><strong>Certificate Details:</strong></p>
-                                <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Untrusted Root Certificate Authority, O=BadSSL</p>
-                                <p class="text-sm"><strong>Subject:</strong> CN=untrusted-root.badssl.com, O=BadSSL</p>
-                                <p class="text-sm"><strong>Valid From:</strong> 2020-01-01 00:00:00 UTC</p>
-                                <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
-                                <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_AUTHORITY_INVALID</p>
-                                <p class="mt-2 text-sm"><strong>Suggested Action:</strong> If this is an internal server, import the Root CA certificate into your system's trust store (e.g., STRUST in SAP ABAP, NWA in SAP Java).</p>
-                            </div>`;
-                    } else if (url.includes('wrong.host.badssl.com')) {
-                         outputHtml = `
-                            <div class="border rounded-lg p-4 bg-red-50">
-                                <h4 class="font-bold text-red-800">Error: Hostname Mismatch</h4>
-                                <p class="mt-2 text-sm">The hostname in the URL (\`wrong.host.badssl.com\`) does not match the Common Name (CN) or any Subject Alternative Names (SANs) in the server's certificate. This is a common issue for misconfigured certificates.</p>
-                                <p class="mt-2 text-sm"><strong>Certificate Details:</strong></p>
-                                <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Intermediate Certificate Authority, O=BadSSL</p>
-                                <p class="text-sm"><strong>Subject:</strong> CN=badssl.com, O=BadSSL</p>
-                                <p class="text-sm"><strong>Valid From:</strong> 2020-01-01 00:00:00 UTC</p>
-                                <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
-                                <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_COMMON_NAME_INVALID</p>
-                                <p class="mt-2 text-sm"><strong>Suggested Action:</strong> Ensure the certificate's CN or SANs exactly match the hostname used in the URL. Regenerate the CSR with correct SANs if needed.</p>
-                            </div>`;
-                    }
-                    else {
-                         outputHtml = `
-                            <div class="border rounded-lg p-4 bg-amber-50">
-                                <h4 class="font-bold text-amber-800">ⓘ Simulation Notice</h4>
-                                <p class="mt-2 text-sm">This is a simulated analysis for <strong>${url}</strong>. A real-world test would probe the server's configuration and display its actual TLS version, cipher suites, and full certificate chain for inspection, which is invaluable for troubleshooting connection issues.</p>
-                                <p class="mt-2 text-sm">Try examples like: \`https://www.google.com\`, \`http://example.com\`, \`https://expired.badssl.com\`, \`https://untrusted-root.badssl.com\`, \`https://wrong.host.badssl.com\`.</p>
-                            </div>`;
-                    }
-                    resultsContainer.innerHTML = outputHtml;
-                }, 1500);
+    window.addEventListener('popstate', () => {
+        navigateTo(window.location.hash);
+    });
+
+    // Initial load
+    navigateTo(window.location.hash || '#cover-page');
+
+    // Handshake visualization logic (updated with more steps)
+    let currentHandshakeStep = -1; // Start at -1 to show nothing initially
+    const handshakeMessages = document.querySelectorAll('.handshake-message');
+    const handshakeExplanation = document.getElementById('handshake-explanation');
+    const handshakeBtn = document.getElementById('handshake-btn');
+    const handshakeResetBtn = document.getElementById('handshake-reset-btn');
+
+    // Define handshakeStepsData here so it's accessible to updateHandshakeVisualization
+    const handshakeStepsData = [
+        { messageId: 'handshake-message-1', text: 'The client sends a "Hello" message, proposing TLS versions and cipher suites.' },
+        { messageId: 'handshake-message-2', text: 'The server replies with its "Hello", choosing a cipher suite.' },
+        { messageId: 'handshake-message-3', text: 'The server sends its certificate chain for client authentication.' },
+        { messageId: 'handshake-message-4', text: 'Server sends key exchange parameters (optional, for ephemeral key exchange).' },
+        { messageId: 'handshake-message-5', text: 'Server requests client certificate (optional, for mutual TLS).' },
+        { messageId: 'handshake-message-6', text: 'Server indicates completion of its hello messages.' },
+        { messageId: 'handshake-message-7', text: 'Client sends its certificate (optional, if requested).' },
+        { messageId: 'handshake-message-8', text: 'Client sends key exchange data (e.g., encrypted premaster secret).' },
+        { messageId: 'handshake-message-9', text: 'Client proves possession of its private key (optional).' },
+        { messageId: 'handshake-message-10', text: 'Client signals transition to encrypted communication.' },
+        { messageId: 'handshake-message-11', text: 'Server signals transition to encrypted communication.' },
+        { messageId: 'handshake-message-12', text: 'Client sends encrypted "Finished" message, verifying handshake.' },
+        { messageId: 'handshake-message-13', text: 'Server sends encrypted "Finished" message, verifying handshake.' }
+    ];
+
+    if (handshakeExplanation && handshakeBtn && handshakeResetBtn && handshakeMessages.length > 0) {
+        function updateHandshakeVisualization() {
+            handshakeMessages.forEach((msg, index) => {
+                // Show current step
+                if (index === currentHandshakeStep) {
+                    msg.classList.add('opacity-100');
+                    msg.classList.remove('opacity-0');
+                } else {
+                    msg.classList.remove('opacity-100');
+                    msg.classList.add('opacity-0');
+                }
+
+                // For the final step, make all arrows visible
+                if (currentHandshakeStep === handshakeStepsData.length - 1) {
+                    msg.classList.add('opacity-100'); // Ensure all messages are visible
+                    msg.classList.remove('opacity-0');
+                }
             });
 
-        
-        const sapgenpseCommands = [
-            {
-                name: 'get_pse',
-                summary: 'Generate a new PSE file, key pair, and self-signed certificate.',
-                content: `
-                    <p>Used to create the initial PSE file. You define the distinguished name, algorithm, and key size. This is often the first step in setting up SSL on a new system.</p>
-                    <div class="code-block mt-2">
-                        <button class="copy-btn">Copy</button>
-                        <pre><code class="language-bash">sapgenpse get_pse -p SAPSSLS.pse -x mypin "CN=mysap.host.com, O=MyCompany, C=US" -a RSA -s 2048</code></pre>
-                    </div>`
-            },
-            {
-                name: 'gen_pse',
-                summary: 'Generate a Certificate Signing Request (CSR) for an existing PSE.',
-                content: `
-                    <p>Crucial for certificate renewals. The \`-onlyreq\` option generates a new CSR using the existing private key in the PSE. The \`-j\` option ensures that any existing Subject Alternative Names (SANs) from the PSE are preserved and carried over to the new certificate request. The \`-onlyreq\` option instructs the tool to generate only the CSR from the existing PSE, while ignoring other parameters like the distinguished name or algorithm, as these settings are derived from the existing PSE. You can also add new SANs with \`-k GN-dNSName:<SAN>\`.</p>
-                    <div class="code-block mt-2">
-                        <button class="copy-btn">Copy</button>
-                        <pre><code class="language-bash"># For renewal, keeping existing SANs
+            if (currentHandshakeStep >= 0 && currentHandshakeStep < handshakeStepsData.length) {
+                handshakeExplanation.textContent = handshakeStepsData[currentHandshakeStep].text;
+            } else {
+                handshakeExplanation.textContent = 'Click "Next Step" to begin the handshake visualization.';
+            }
+
+            if (currentHandshakeStep === handshakeStepsData.length - 1) {
+                handshakeBtn.disabled = true;
+                handshakeBtn.textContent = 'Completed';
+            } else {
+                handshakeBtn.disabled = false;
+                handshakeBtn.textContent = 'Next Step';
+            }
+        }
+
+        // Initialize visualization
+        updateHandshakeVisualization();
+
+        handshakeBtn.addEventListener('click', () => {
+            if (currentHandshakeStep < handshakeStepsData.length - 1) {
+                currentHandshakeStep++;
+                updateHandshakeVisualization();
+            }
+        });
+
+        handshakeResetBtn.addEventListener('click', () => {
+            currentHandshakeStep = -1;
+            updateHandshakeVisualization();
+        });
+    } else {
+        console.warn("Handshake visualization elements not fully available. Handshake functionality disabled.");
+    }
+
+
+    // SSL Certificate Viewer & Connection Simulator (Enhanced)
+    const liveTestBtn = document.getElementById('live-test-btn');
+    const liveUrlInput = document.getElementById('live-url-input');
+    const resultsContainer = document.getElementById('live-results-container');
+
+    if (liveTestBtn && liveUrlInput && resultsContainer) {
+        liveTestBtn.addEventListener('click', () => {
+            const url = liveUrlInput.value.trim();
+            resultsContainer.innerHTML = `<div class="text-center p-4"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto"></div><p class="mt-2">Simulating connection to ${url}...</p></div>`;
+
+
+            setTimeout(() => {
+                let outputHtml = '';
+                if (!url) {
+                    outputHtml = `
+                        <div class="border rounded-lg p-4 bg-red-50">
+                            <h4 class="font-bold text-red-800">Error: Invalid URL</h4>
+                            <p class="mt-2 text-sm">Please enter a valid URL (e.g., https://www.google.com).</p>
+                        </div>`;
+                } else if (url.startsWith('http://')) {
+                    outputHtml = `
+                        <div class="border rounded-lg p-4 bg-yellow-50">
+                            <h4 class="font-bold text-yellow-800">Warning: Unencrypted Connection (HTTP)</h4>
+                            <p class="mt-2 text-sm">The URL you entered uses HTTP, which is not secure. Data sent over HTTP is unencrypted and vulnerable to eavesdropping and tampering. Always prefer HTTPS for secure communication.</p>
+                            <p class="mt-2 text-sm"><strong>Suggested Action:</strong> Try changing the URL to HTTPS (e.g., \`https://${url.substring(7)}\`) if the server supports it.</p>
+                        </div>`;
+                } else if (url.includes('google.com') || url.includes('sap.com')) {
+                     outputHtml = `
+                        <div class="border rounded-lg p-4 bg-gray-50">
+                            <h4 class="font-bold text-green-700">✓ Secure Connection Simulated</h4>
+                            <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm">
+                                <div><strong class="text-slate-600">Protocol:</strong> <span class="font-mono">TLS 1.3</span></div>
+                                <div><strong class="text-slate-600">Cipher Suite:</strong> <span class="font-mono">TLS_AES_256_GCM_SHA384</span></div>
+                                <div><strong class="text-slate-600">Key Exchange:</strong> <span class="font-mono">X25519</span></div>
+                                <div><strong class="text-slate-600">Signature Algorithm:</strong> <span class="font-mono">RSA-PSS</span></div>
+                            </div>
+                            <div class="mt-4">
+                                <strong class="text-slate-600">Certificate Chain:</strong>
+                                <ol class="list-decimal list-inside mt-2 text-sm space-y-1">
+                                    <li><span class="font-mono">CN=*.${url.includes('google.com') ? 'google.com' : 'sap.com'}</span> (Issued by: GTS CA 1C3) <span class="text-green-600 font-semibold ml-2">✓ Valid</span></li>
+                                    <li><span class="font-mono">CN=GTS CA 1C3</span> (Issued by: GTS Root R1) <span class="text-green-600 font-semibold ml-2">✓ Trusted</span></li>
+                                    <li><span class="font-mono">CN=GTS Root R1</span> (Issued by: GlobalSign) <span class="text-green-600 font-semibold ml-2">✓ Trusted Root</span></li>
+                                </ol>
+                            </div>
+                            <div class="mt-4">
+                                <strong class="text-slate-600">Certificate Details:</strong>
+                                <p class="text-sm"><strong>Issuer:</strong> CN=GTS CA 1C3, O=Google Trust Services LLC, C=US</p>
+                                <p class="text-sm"><strong>Subject:</strong> CN=*.${url.includes('google.com') ? 'google.com' : 'sap.com'}, O=Google LLC, L=Mountain View, ST=California, C=US</p>
+                                <p class="text-sm"><strong>Valid From:</strong> 2024-01-01 00:00:00 UTC</p>
+                                <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
+                                <p class="text-sm"><strong>Serial Number:</strong> 1234567890ABCDEF</p>
+                                <p class="text-sm"><strong>Signature Algorithm:</strong> sha256WithRSAEncryption</p>
+                                <p class="text-sm"><strong>Public Key Algorithm:</strong> id-ecPublicKey (256-bit)</p>
+                            </div>
+                        </div>`;
+                } else if (url.includes('expired.badssl.com')) {
+                    outputHtml = `
+                        <div class="border rounded-lg p-4 bg-red-50">
+                            <h4 class="font-bold text-red-800">Error: Certificate Expired</h4>
+                            <p class="mt-2 text-sm">The server presented an SSL certificate that has expired. This indicates a severe security risk and prevents a secure connection.</p>
+                            <p class="mt-2 text-sm"><strong>Certificate Details:</strong></p>
+                            <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Intermediate Certificate Authority, O=BadSSL</p>
+                            <p class="text-sm"><strong>Subject:</strong> CN=expired.badssl.com, O=BadSSL</p>
+                            <p class="text-sm"><strong>Valid From:</strong> 2015-01-01 00:00:00 UTC</p>
+                            <p class="text-sm"><strong>Valid To:</strong> 2016-01-01 23:59:59 UTC <span class="text-red-600 font-semibold">(EXPIRED)</span></p>
+                            <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_DATE_INVALID</p>
+                            <p class="mt-2 text-sm"><strong>Suggested Action:</strong> The server administrator must renew the certificate.</p>
+                        </div>`;
+                } else if (url.includes('untrusted-root.badssl.com')) {
+                    outputHtml = `
+                        <div class="border rounded-lg p-4 bg-red-50">
+                            <h4 class="font-bold text-red-800">Error: Untrusted Certificate Authority</h4>
+                            <p class="mt-2 text-sm">The server's certificate is issued by an authority that is not trusted by your system. This often happens with self-signed certificates or certificates issued by private/internal CAs not recognized publicly.</p>
+                            <p class="mt-2 text-sm"><strong>Certificate Details:</strong></p>
+                            <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Untrusted Root Certificate Authority, O=BadSSL</p>
+                            <p class="text-sm"><strong>Subject:</strong> CN=untrusted-root.badssl.com, O=BadSSL</p>
+                            <p class="text-sm"><strong>Valid From:</strong> 2020-01-01 00:00:00 UTC</p>
+                            <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
+                            <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_AUTHORITY_INVALID</p>
+                            <p class="mt-2 text-sm"><strong>Suggested Action:</strong> If this is an internal server, import the Root CA certificate into your system's trust store (e.g., STRUST in SAP ABAP, NWA in SAP Java).</p>
+                        </div>`;
+                } else if (url.includes('wrong.host.badssl.com')) {
+                     outputHtml = `
+                        <div class="border rounded-lg p-4 bg-red-50">
+                            <h4 class="font-bold text-red-800">Error: Hostname Mismatch</h4>
+                            <p class="mt-2 text-sm">The hostname in the URL (\`wrong.host.badssl.com\`) does not match the Common Name (CN) or any Subject Alternative Names (SANs) in the server's certificate. This is a common issue for misconfigured certificates.</p>
+                            <p class="mt-2 text-sm"><strong>Certificate Details:</strong></p>
+                            <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Intermediate Certificate Authority, O=BadSSL</p>
+                            <p class="text-sm"><strong>Subject:</strong> CN=badssl.com, O=BadSSL</p>
+                            <p class="text-sm"><strong>Valid From:</strong> 2020-01-01 00:00:00 UTC</p>
+                            <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
+                            <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_COMMON_NAME_INVALID</p>
+                            <p class="mt-2 text-sm"><strong>Suggested Action:</strong> Ensure the certificate's CN or SANs exactly match the hostname used in the URL. Regenerate the CSR with correct SANs if needed.</p>
+                        </div>`;
+                }
+                else {
+                     outputHtml = `
+                        <div class="border rounded-lg p-4 bg-amber-50">
+                            <h4 class="font-bold text-amber-800">ⓘ Simulation Notice</h4>
+                            <p class="mt-2 text-sm">This is a simulated analysis for <strong>${url}</strong>. A real-world test would probe the server's configuration and display its actual TLS version, cipher suites, and full certificate chain for inspection, which is invaluable for troubleshooting connection issues.</p>
+                            <p class="mt-2 text-sm">Try examples like: \`https://www.google.com\`, \`http://example.com\`, \`https://expired.badssl.com\`, \`https://untrusted-root.badssl.com\`, \`https://wrong.host.badssl.com\`.</p>
+                        </div>`;
+                }
+                resultsContainer.innerHTML = outputHtml;
+            }, 1500);
+        });
+
+    
+    const sapgenpseCommands = [
+        {
+            name: 'get_pse',
+            summary: 'Generate a new PSE file, key pair, and self-signed certificate.',
+            content: `
+                <p>Used to create the initial PSE file. You define the distinguished name, algorithm, and key size. This is often the first step in setting up SSL on a new system.</p>
+                <div class="code-block mt-2">
+                    <button class="copy-btn">Copy</button>
+                    <pre><code class="language-bash">sapgenpse get_pse -p SAPSSLS.pse -x mypin "CN=mysap.host.com, O=MyCompany, C=US" -a RSA -s 2048</code></pre>
+                </div>`
+        },
+        {
+            name: 'gen_pse',
+            summary: 'Generate a Certificate Signing Request (CSR) for an existing PSE.',
+            content: `
+                <p>Crucial for certificate renewals. The \`-onlyreq\` option generates a new CSR using the existing private key in the PSE. The \`-j\` option ensures that any existing Subject Alternative Names (SANs) from the PSE are preserved and carried over to the new certificate request. The \`-onlyreq\` option instructs the tool to generate only the CSR from the existing PSE, while ignoring other parameters like the distinguished name or algorithm, as these settings are derived from the existing PSE. You can also add new SANs with \`-k GN-dNSName:<SAN>\`.</p>
+                <div class="code-block mt-2">
+                    <button class="copy-btn">Copy</button>
+                    <pre><code class="language-bash"># For renewal, keeping existing SANs
 sapgenpse gen_pse -p SAPSSLS.pse -onlyreq -j -r renew_req.csr
 
 # Generate CSR with new SANs
 sapgenpse gen_pse -p webdisp.pse -r webdisp.csr -k GN-dNSName:webdisp.example.com -k GN-dNSName:wd.example.com "CN=webdisp.example.com"</code></pre>
-                </div>`
-            },
-            {
-                name: 'import_own_cert',
-                summary: 'Import a signed certificate response from a CA into your PSE.',
-                content: `
-                    <p>After your CA signs your CSR, you use this command to import the signed certificate back into your PSE. You must also include the CA's intermediate/root certificates using the \`-r\` option to complete the chain.</p>
-                    <div class="code-block mt-2">
-                        <button class="copy-btn">Copy</button>
-                        <pre><code class="language-bash">sapgenpse import_own_cert -p SAPSSLS.pse -c signed_cert.crt -r ca_bundle.crt -x mypin</code></pre>
-                    </div>`
-            },
-            {
-                name: 'maintain_pk',
-                summary: 'Manage the list of trusted certificates in a PSE.',
-                content: `
-                    <p>Used to add (\`-a\`) or delete (\`-d\`) trusted CA certificates to a PSE's certificate list. This is essential for client PSEs (like SAPSSLC.pse) that need to trust external servers.</p>
+            </div>`
+        },
+        {
+            name: 'import_own_cert',
+            summary: 'Import a signed certificate response from a CA into your PSE.',
+            content: `
+                <p>After your CA signs your CSR, you use this command to import the signed certificate back into your PSE. You must also include the CA's intermediate/root certificates using the \`-r\` option to complete the chain.</p>
                 <div class="code-block mt-2">
                     <button class="copy-btn">Copy</button>
-                    <pre><code class="language-bash"># Add a trusted CA certificate to the client PSE
+                    <pre><code class="language-bash">sapgenpse import_own_cert -p SAPSSLS.pse -c signed_cert.crt -r ca_bundle.crt -x mypin</code></pre>
+                </div>`
+        },
+        {
+            name: 'maintain_pk',
+            summary: 'Manage the list of trusted certificates in a PSE.',
+            content: `
+                <p>Used to add (\`-a\`) or delete (\`-d\`) trusted CA certificates to a PSE's certificate list. This is essential for client PSEs (like SAPSSLC.pse) that need to trust external servers.</p>
+            <div class="code-block mt-2">
+                <button class="copy-btn">Copy</button>
+                <pre><code class="language-bash"># Add a trusted CA certificate to the client PSE
 sapgenpse maintain_pk -p SAPSSLC.pse -a some_ca.crt -x mypin
 
 # List certificates in a PSE
 sapgenpse maintain_pk -p SAPSSLS.pse -l</code></pre>
-                </div>`
-            },
-            {
-                name: 'export_p12',
-                summary: 'Export the PSE (private key + certs) to a standard PKCS#12 file.',
-                content: `
-                    <p>Creates a \`.p12\` or \`.pfx\` file. This is the standard way to move a complete certificate identity from an ABAP PSE to an SAP Java system (NWA) or a Web Dispatcher. Use \`-z\` for a password and \`-C 0\` to include the full chain.</p>
-                <div class="code-block mt-2">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-bash">sapgenpse export_p12 -p SAPSSLS.pse -x mypin -z p12pass SAPSSLS.p12 -C 0</code></pre>
-                </div>`
-            },
-            {
-                name: 'seclogin',
-                summary: 'Create SSO credentials for unattended PSE access.',
-                content: `
-                    <p>Creates a \`cred_v2\` file that allows the SAP system OS user (e.g., &lt;sidadm&gt;) to access the PSE without a PIN. This is mandatory for services like the ICM to start automatically and use the SSL certificate.</p>
-                <div class="code-block mt-2">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-bash">sapgenpse seclogin -p SAPSSLS.pse -x mypin -O sidadm</code></pre>
-                </div>`
-            },
-            {
-                name: 'cryptinfo',
-                summary: 'Display detailed information about the SAP Cryptographic Library.',
-                content: `
-                    <p>This command is useful for verifying the capabilities of the installed CommonCryptoLib, including supported hash algorithms, encryption algorithms, and key exchange algorithms.</p>
-                <div class="code-block mt-2">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-bash">sapgenpse cryptinfo</code></pre>
-                </div>`
-            },
-            {
-                name: 'get_my_name',
-                summary: 'Retrieve and display the Distinguished Name (DN) of the certificate in a PSE.',
-                content: `
-                    <p>Displays the subject DN of the certificate stored in the specified PSE. Use \`-v\` for verbose output.</p>
-                <div class="code-block mt-2">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-bash">sapgenpse get_my_name -p SAPSSLS.pse -x mypin -v</code></pre>
-                </div>`
-            },
-            {
-                name: '-chpin',
-                summary: 'Change the PIN of an existing PSE.',
-                content: `
-                    <p>Allows you to change the password protecting your PSE file.</p>
-                <div class="code-block mt-2">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-bash">sapgenpse -chpin -x oldpin -X newpin -p SAPSSLS.pse</code></pre>
-                </div>`
-            }
-        ];
-
-        const accordionContainer = document.getElementById('sapgenpse-accordion');
-        if (accordionContainer) {
-            sapgenpseCommands.forEach(cmd => {
-                const item = document.createElement('div');
-                item.className = 'border border-stone-200 rounded-lg bg-white';
-                item.innerHTML = `
-                    <button class="sapgenpse-accordion-header w-full text-left p-4 flex justify-between items-center font-semibold text-slate-800 hover:bg-slate-50">
-                        <span><code class="text-base text-teal-700 font-bold">${cmd.name}</code>: ${cmd.summary}</span>
-                        <span class="transform transition-transform duration-300">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </span>
-                    </button>
-                    <div class="sapgenpse-accordion-content px-4 pb-4">
-                        ${cmd.content}
-                    </div>
-                `;
-                accordionContainer.appendChild(item);
-            });
-            
-            document.querySelectorAll('.sapgenpse-accordion-header').forEach(button => {
-                button.addEventListener('click', () => {
-                    const content = button.nextElementSibling;
-                    const icon = button.querySelector('span.transform');
-                    
-                    if (content.style.display === "block") {
-                        content.style.maxHeight = null;
-                        content.style.display = "none";
-                        icon.classList.remove('rotate-180');
-                    } else {
-                        content.style.display = "block";
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        icon.classList.add('rotate-180');
-                    }
-                });
-            });
-        } else {
-            console.warn("SAPGENPSE Accordion container not found. Accordion functionality disabled.");
+            </div>`
+        },
+        {
+            name: 'export_p12',
+            summary: 'Export the PSE (private key + certs) to a standard PKCS#12 file.',
+            content: `
+                <p>Creates a \`.p12\` or \`.pfx\` file. This is the standard way to move a complete certificate identity from an ABAP PSE to an SAP Java system (NWA) or a Web Dispatcher. Use \`-z\` for a password and \`-C 0\` to include the full chain.</p>
+            <div class="code-block mt-2">
+                <button class="copy-btn">Copy</button>
+                <pre><code class="language-bash">sapgenpse export_p12 -p SAPSSLS.pse -x mypin -z p12pass SAPSSLS.p12 -C 0</code></pre>
+            </div>`
+        },
+        {
+            name: 'seclogin',
+            summary: 'Create SSO credentials for unattended PSE access.',
+            content: `
+                <p>Creates a \`cred_v2\` file that allows the SAP system OS user (e.g., &lt;sidadm&gt;) to access the PSE without a PIN. This is mandatory for services like the ICM to start automatically and use the SSL certificate.</p>
+            <div class="code-block mt-2">
+                <button class="copy-btn">Copy</button>
+                <pre><code class="language-bash">sapgenpse seclogin -p SAPSSLS.pse -x mypin -O sidadm</code></pre>
+            </div>`
+        },
+        {
+            name: 'cryptinfo',
+            summary: 'Display detailed information about the SAP Cryptographic Library.',
+            content: `
+                <p>This command is useful for verifying the capabilities of the installed CommonCryptoLib, including supported hash algorithms, encryption algorithms, and key exchange algorithms.</p>
+            <div class="code-block mt-2">
+                <button class="copy-btn">Copy</button>
+                <pre><code class="language-bash">sapgenpse cryptinfo</code></pre>
+            </div>`
+        },
+        {
+            name: 'get_my_name',
+            summary: 'Retrieve and display the Distinguished Name (DN) of the certificate in a PSE.',
+            content: `
+                <p>Displays the subject DN of the certificate stored in the specified PSE. Use \`-v\` for verbose output.</p>
+            <div class="code-block mt-2">
+                <button class="copy-btn">Copy</button>
+                <pre><code class="language-bash">sapgenpse get_my_name -p SAPSSLS.pse -x mypin -v</code></pre>
+            </div>`
+        },
+        {
+            name: '-chpin',
+            summary: 'Change the PIN of an existing PSE.',
+            content: `
+                <p>Allows you to change the password protecting your PSE file.</p>
+            <div class="code-block mt-2">
+                <button class="copy-btn">Copy</button>
+                <pre><code class="language-bash">sapgenpse -chpin -x oldpin -X newpin -p SAPSSLS.pse</code></pre>
+            </div>`
         }
+    ];
 
-        document.body.addEventListener('click', function(e) {
-            if (e.target.classList.contains('copy-btn')) {
-                const button = e.target;
-                const pre = button.nextElementSibling;
-                const code = pre.querySelector('code');
-                const text = code.innerText;
-
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-
-                button.textContent = 'Copied!';
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                }, 2000);
-            }
+    const accordionContainer = document.getElementById('sapgenpse-accordion');
+    if (accordionContainer) {
+        sapgenpseCommands.forEach(cmd => {
+            const item = document.createElement('div');
+            item.className = 'border border-stone-200 rounded-lg bg-white';
+            item.innerHTML = `
+                <button class="sapgenpse-accordion-header w-full text-left p-4 flex justify-between items-center font-semibold text-slate-800 hover:bg-slate-50">
+                    <span><code class="text-base text-teal-700 font-bold">${cmd.name}</code>: ${cmd.summary}</span>
+                    <span class="transform transition-transform duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </span>
+                </button>
+                <div class="sapgenpse-accordion-content px-4 pb-4">
+                    ${cmd.content}
+                </div>
+            `;
+            accordionContainer.appendChild(item);
         });
+        
+        document.querySelectorAll('.sapgenpse-accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('span.transform');
+                
+                if (content.style.display === "block") {
+                    content.style.maxHeight = null;
+                    content.style.display = "none";
+                    icon.classList.remove('rotate-180');
+                } else {
+                    content.style.display = "block";
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    icon.classList.add('rotate-180');
+                }
+            });
+        });
+    } else {
+        console.warn("SAPGENPSE Accordion container not found. Accordion functionality disabled.");
+    }
 
-        const sapgenpseHelpText = `
+    document.body.addEventListener('click', function(e) {
+        if (e.target.classList.contains('copy-btn')) {
+            const button = e.target;
+            const pre = button.nextElementSibling;
+            const code = pre.querySelector('code');
+            const text = code.innerText;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+    });
+
+    const sapgenpseHelpText = `
 Usage: sapgenpse <command> [options]
 
 Commands:
-  get_pse             Generate a new PSE file, key pair, and self-signed certificate.
-                      Syntax: get_pse [-x PIN] [-a <algorithm>] [-s <key_len>] [-noreq | -onlyreq] <PSE_name> <Distinguished_Name>
-                      Example: sapgenpse get_pse -p SAPSSLS.pse -x mypin "CN=mysap.host.com, O=MyCompany, C=US" -a RSA -s 2048
+get_pse             Generate a new PSE file, key pair, and self-signed certificate.
+                  Syntax: get_pse [-x PIN] [-a <algorithm>] [-s <key_len>] [-noreq | -onlyreq] <PSE_name> <Distinguished_Name>
+                  Example: sapgenpse get_pse -p SAPSSLS.pse -x mypin "CN=mysap.host.com, O=MyCompany, C=US" -a RSA -s 2048
 
-  gen_pse             Generate a Certificate Signing Request (CSR) for an existing PSE.
-                      Syntax: gen_pse [-x PIN] [-p <PSE_name>] [-r <csr_file>] [-onlyreq] [-j] [-k <SAN_type>:<SAN_value>] <Distinguished_Name>
-                      Example (new PSE & CSR): sapgenpse gen_pse -p new.pse -r new.csr "CN=test.com"
-                      Example (CSR for existing PSE): sapgenpse gen_pse -p existing.pse -onlyreq -j -r renew.csr
-                      Example (CSR with SANs): sapgenpse gen_pse -p webdisp.pse -r webdisp.csr -k GN-dNSName:webdisp.example.com -k GN-dNSName:wd.example.com "CN=webdisp.example.com"
+gen_pse             Generate a Certificate Signing Request (CSR) for an existing PSE.
+                  Syntax: gen_pse [-x PIN] [-p <PSE_name>] [-r <csr_file>] [-onlyreq] [-j] [-k <SAN_type>:<SAN_value>] <Distinguished_Name>
+                  Example (new PSE & CSR): sapgenpse gen_pse -p new.pse -r new.csr "CN=test.com"
+                  Example (CSR for existing PSE): sapgenpse gen_pse -p existing.pse -onlyreq -j -r renew.csr
+                  Example (CSR with SANs): sapgenpse gen_pse -p webdisp.pse -r webdisp.csr -k GN-dNSName:webdisp.example.com -k GN-dNSName:wd.example.com "CN=webdisp.example.com"
 
-  import_own_cert     Import a signed certificate response from a CA into your PSE.
-                      Syntax: import_own_cert [-x PIN] -p <PSE_file> -c <Cert_file> [-r <RootCA_cert_file>]
-                      Example: sapgenpse import_own_cert -p SAPSSLS.pse -c signed_cert.crt -r ca_bundle.crt -x mypin
+import_own_cert     Import a signed certificate response from a CA into your PSE.
+                  Syntax: import_own_cert [-x PIN] -p <PSE_file> -c <Cert_file> [-r <RootCA_cert_file>]
+                  Example: sapgenpse import_own_cert -p SAPSSLS.pse -c signed_cert.crt -r ca_bundle.crt -x mypin
 
-  maintain_pk         Manage the list of trusted certificates in a PSE.
-                      Syntax (add): maintain_pk [-x PIN] -p <PSE_name> -a <cert_file>
-                      Syntax (delete): maintain_pk [-x PIN] -p <PSE_name> -d <number>
-                      Syntax (list): maintain_pk [-x PIN] -p <PSE_name> -l [number]
-                      Example (add): sapgenpse maintain_pk -p SAPSSLC.pse -a some_ca.crt -x mypin
-                      Example (list): sapgenpse maintain_pk -p SAPSSLS.pse -l
+maintain_pk         Manage the list of trusted certificates in a PSE.
+                  Syntax (add): maintain_pk [-x PIN] -p <PSE_name> -a <cert_file>
+                  Syntax (delete): maintain_pk [-x PIN] -p <PSE_name> -d <number>
+                  Syntax (list): maintain_pk [-x PIN] -p <PSE_name> -l [number]
+                  Example (add): sapgenpse maintain_pk -p SAPSSLC.pse -a some_ca.crt -x mypin
+                  Example (list): sapgenpse maintain_pk -p SAPSSLS.pse -l
 
-  export_own_cert     Export the public-key certificate from a PSE.
-                      Syntax: export_own_cert [-x PIN] -o <output_file> -p <PSE_name>
-                      Example: sapgenpse export_own_cert -o server.crt -p SAPSSLS.pse -x mypin
+export_own_cert     Export the public-key certificate from a PSE.
+                  Syntax: export_own_cert [-x PIN] -o <output_file> -p <PSE_name>
+                  Example: sapgenpse export_own_cert -o server.crt -p SAPSSLS.pse -x mypin
 
-  export_p12          Export the PSE (private key + certs) to a standard PKCS#12 file.
-                      Syntax: export_p12 [-x PIN] -p <PSE_name> [-z <password>] [-C <count>] <filename>.p12
-                      Example: sapgenpse export_p12 -p SAPSSLS.pse -x mypin -z p12pass SAPSSLS.p12 -C 0
+export_p12          Export the PSE (private key + certs) to a standard PKCS#12 file.
+                  Syntax: export_p12 [-x PIN] -p <PSE_name> [-z <password>] [-C <count>] <filename>.p12
+                  Example: sapgenpse export_p12 -p SAPSSLS.pse -x mypin -z p12pass SAPSSLS.p12 -C 0
 
-  seclogin            Create SSO credentials for unattended PSE access.
-                      Syntax: seclogin [-x PIN] -p <PSE_name> -O <user_ID>
-                      Example: sapgenpse seclogin -p SAPSSLS.pse -x mypin -O sidadm
+seclogin            Create SSO credentials for unattended PSE access.
+                  Syntax: seclogin [-x PIN] -p <PSE_name> -O <user_ID>
+                  Example: sapgenpse seclogin -p SAPSSLS.pse -x mypin -O sidadm
 
-  cryptinfo           Display detailed information about the SAP Cryptographic Library.
-                      Syntax: cryptinfo
-                      Example: sapgenpse cryptinfo
+cryptinfo           Display detailed information about the SAP Cryptographic Library.
+                  Syntax: cryptinfo
+                  Example: sapgenpse cryptinfo
 
-  get_my_name         Retrieve and display the Distinguished Name (DN) of the certificate in a PSE.
-                      Syntax: get_my_name [-p <PSE_name>] [-x <PIN>]
-                      Example: sapgenpse get_my_name -p SAPSSLS.pse -x mypin
+get_my_name         Retrieve and display the Distinguished Name (DN) of the certificate in a PSE.
+                  Syntax: get_my_name [-p <PSE_name>] [-x <PIN>]
+                  Example: sapgenpse get_my_name -p SAPSSLS.pse -x mypin
 
-  -chpin              Change the PIN of an existing PSE.
-                      Syntax: -chpin [-x <old_PIN>] [-X <new_PIN>] -p <PSE_name>
-                      Example: sapgenpse -chpin -x oldpin -X newpin -p SAPSSLS.pse
+-chpin              Change the PIN of an existing PSE.
+                  Syntax: -chpin [-x <old_PIN>] [-X <new_PIN>] -p <PSE_name>
+                  Example: sapgenpse -chpin -x oldpin -X newpin -p SAPSSLS.pse
 
 Global Options:
-  -v                  Verbose output.
-  -h                  Display this help message.
-  -i                  Interactive mode.
-  -trace <level>      Set trace level.
+-v                  Verbose output.
+-h                  Display this help message.
+-i                  Interactive mode.
+-trace <level>      Set trace level.
 
 Algorithms:
-  RSA, DSA, ECC
+RSA, DSA, ECC
 
 Key Lengths:
-  1024, 2048, 4096 (depends on algorithm)
+1024, 2048, 4096 (depends on algorithm)
 
 Subject Alternative Name (SAN) Types:
-  GN-dNSName (DNS Name)
-  GN-iPAddress (IP Address)
-  GN-rfc822Name (Email Address)
-  GN-uniformResourceIdentifier (URI)
+GN-dNSName (DNS Name)
+GN-iPAddress (IP Address)
+GN-rfc822Name (Email Address)
+GN-uniformResourceIdentifier (URI)
 `;
 
-    // LLM Integration: sapgenpse Command Generator
-    const generateSapgenpseBtn = document.getElementById('generate-sapgenpse-btn');
-    const sapgenpsePromptInput = document.getElementById('sapgenpse-prompt');
-    const sapgenpseOutputDiv = document.getElementById('sapgenpse-output');
-    const sapgenpseOutputCode = sapgenpseOutputDiv.querySelector('code');
-    const sapgenpseLoading = document.getElementById('sapgenpse-loading');
+// LLM Integration: sapgenpse Command Generator
+const generateSapgenpseBtn = document.getElementById('generate-sapgenpse-btn');
+const sapgenpsePromptInput = document.getElementById('sapgenpse-prompt');
+const sapgenpseOutputDiv = document.getElementById('sapgenpse-output');
+const sapgenpseOutputCode = sapgenpseOutputDiv.querySelector('code');
+const sapgenpseLoading = document.getElementById('sapgenpse-loading');
 
-    generateSapgenpseBtn.addEventListener('click', async () => {
-        const promptText = sapgenpsePromptInput.value.trim();
-        if (!promptText) {
-            sapgenpseOutputDiv.classList.add('hidden');
-            alert('Please describe the sapgenpse command you want to generate.');
-            return;
-        }
-
+generateSapgenpseBtn.addEventListener('click', async () => {
+    const promptText = sapgenpsePromptInput.value.trim();
+    if (!promptText) {
         sapgenpseOutputDiv.classList.add('hidden');
-        sapgenpseLoading.classList.remove('hidden');
+        alert('Please describe the sapgenpse command you want to generate.');
+        return;
+    }
 
-        try {
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: `As an expert SAP Basis consultant, generate the exact 'sapgenpse' command based on the following description. Ensure accuracy in syntax, options, and parameters. If you are unsure about the exact command or options, instead provide the relevant section from the provided 'sapgenpse -h' help text that would guide the user. Do NOT add any extra conversational text, just the command or the help text.
+    sapgenpseOutputDiv.classList.add('hidden');
+    sapgenpseLoading.classList.remove('hidden');
+
+    try {
+        let chatHistory = [];
+        chatHistory.push({ role: "user", parts: [{ text: `As an expert SAP Basis consultant, generate the exact 'sapgenpse' command based on the following description. Ensure accuracy in syntax, options, and parameters. If you are unsure about the exact command or options, instead provide the relevant section from the provided 'sapgenpse -h' help text that would guide the user. Do NOT add any extra conversational text, just the command or the help text.
 
 Description: ${promptText}
 
@@ -2392,208 +2392,208 @@ sapgenpse -h help text (for reference, use relevant sections if unsure):
 ${sapgenpseHelpText}
 ---
 ` }] });
-            const payload = { contents: chatHistory };
-            // Call your Netlify Function proxy
-            const response = await fetch('/.netlify/functions/gemini-proxy', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            console.log('Sapgenpse Command Generator - API Response Object:', response); // Log the full response object
-            const result = await response.json();
-            console.log('Sapgenpse Command Generator - API Result JSON:', result); // Log the parsed JSON result
+        const payload = { contents: chatHistory };
+        // Call your Netlify Function proxy
+        const response = await fetch('/.netlify/functions/gemini-proxy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        console.log('Sapgenpse Command Generator - API Response Object:', response); // Log the full response object
+        const result = await response.json();
+        console.log('Sapgenpse Command Generator - API Result JSON:', result); // Log the parsed JSON result
 
-            if (response.ok && result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                const generatedContent = result.candidates[0].content.parts[0].text.trim();
-                
-                // Heuristic to check if it's a command or help text
-                if (generatedContent.startsWith('sapgenpse') || generatedContent.includes('Usage: sapgenpse')) {
-                    sapgenpseOutputCode.textContent = generatedContent;
-                    sapgenpseOutputDiv.classList.remove('hidden');
-                } else {
-                    // Assume it's a relevant help section if it doesn't start with 'sapgenpse'
-                    sapgenpseOutputCode.textContent = `Could not generate a precise command. Here is a relevant section from 'sapgenpse -h' that might help:\n\n${generatedContent}`;
-                    sapgenpseOutputDiv.classList.remove('hidden');
-                }
-            } else if (!response.ok) {
-                sapgenpseOutputCode.textContent = `Error: API request failed with status ${response.status} (${response.statusText}). Please check network or API service.`;
+        if (response.ok && result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            const generatedContent = result.candidates[0].content.parts[0].text.trim();
+            
+            // Heuristic to check if it's a command or help text
+            if (generatedContent.startsWith('sapgenpse') || generatedContent.includes('Usage: sapgenpse')) {
+                sapgenpseOutputCode.textContent = generatedContent;
                 sapgenpseOutputDiv.classList.remove('hidden');
             } else {
-                sapgenpseOutputCode.textContent = 'Error: Could not generate command. Unexpected API response structure. Check console for details.';
+                // Assume it's a relevant help section if it doesn't start with 'sapgenpse'
+                sapgenpseOutputCode.textContent = `Could not generate a precise command. Here is a relevant section from 'sapgenpse -h' that might help:\n\n${generatedContent}`;
                 sapgenpseOutputDiv.classList.remove('hidden');
             }
-        } catch (error) {
-            console.error('Error calling Gemini API for sapgenpse command:', error);
-            sapgenpseOutputCode.textContent = `Error: Failed to connect or process API response. Details: ${error.message}. Please check your network or try again later.`;
+        } else if (!response.ok) {
+            sapgenpseOutputCode.textContent = `Error: API request failed with status ${response.status} (${response.statusText}). Please check network or API service.`;
             sapgenpseOutputDiv.classList.remove('hidden');
-        } finally {
-            sapgenpseLoading.classList.add('hidden');
+        } else {
+            sapgenpseOutputCode.textContent = 'Error: Could not generate command. Unexpected API response structure. Check console for details.';
+            sapgenpseOutputDiv.classList.remove('hidden');
         }
-    });
+    } catch (error) {
+        console.error('Error calling Gemini API for sapgenpse command:', error);
+        sapgenpseOutputCode.textContent = `Error: Failed to connect or process API response. Details: ${error.message}. Please check your network or try again later.`;
+        sapgenpseOutputDiv.classList.remove('hidden');
+    } finally {
+        sapgenpseLoading.classList.add('hidden');
+    }
+});
 
-    // Define the JSON schema for troubleshooting output
-    const troubleshootingSchema = {
-        type: "OBJECT",
-        properties: {
-            title: { type: "STRING" },
-            sections: {
-                type: "ARRAY",
-                items: {
-                    type: "OBJECT",
-                    properties: {
-                        heading: { type: "STRING" },
-                        type: { type: "STRING", enum: ["ordered-list", "unordered-list"] },
+// Define the JSON schema for troubleshooting output
+const troubleshootingSchema = {
+    type: "OBJECT",
+    properties: {
+        title: { type: "STRING" },
+        sections: {
+            type: "ARRAY",
+            items: {
+                type: "OBJECT",
+                properties: {
+                    heading: { type: "STRING" },
+                    type: { type: "STRING", enum: ["ordered-list", "unordered-list"] },
+                    items: {
+                        type: "ARRAY",
                         items: {
-                            type: "ARRAY",
-                            items: {
-                                type: "OBJECT",
-                                properties: {
-                                    title: { type: "STRING" },
-                                    description: { type: "STRING" }, // Can contain markdown, including code blocks
-                                    sub_items: {
-                                        type: "ARRAY",
-                                        items: {
-                                            type: "OBJECT",
-                                            properties: {
-                                                title: { type: "STRING" },
-                                                content: { type: "STRING" } // Can contain markdown, including code blocks
-                                            }
+                            type: "OBJECT",
+                            properties: {
+                                title: { type: "STRING" },
+                                description: { type: "STRING" }, // Can contain markdown, including code blocks
+                                sub_items: {
+                                    type: "ARRAY",
+                                    items: {
+                                        type: "OBJECT",
+                                        properties: {
+                                            title: { type: "STRING" },
+                                            content: { type: "STRING" } // Can contain markdown, including code blocks
                                         }
                                     }
-                                },
-                                required: ["title", "description"]
-                            }
+                                }
+                            },
+                            required: ["title", "description"]
                         }
-                    },
-                    required: ["heading", "type", "items"]
-                }
+                    }
+                },
+                required: ["heading", "type", "items"]
             }
-        },
-        required: ["title", "sections"]
-    };
-
-    // Basic Markdown to HTML converter
-    function markdownToHtml(markdown) {
-        // Ensure markdown is a string before processing
-        if (typeof markdown !== 'string' || markdown === null) {
-            return '';
         }
+    },
+    required: ["title", "sections"]
+};
 
-        let html = markdown;
-
-        // Handle multiline code blocks first to prevent inner backticks from being processed
-        html = html.replace(/```bash\n([\s\S]*?)```/g, (match, code) => {
-            return `<div class="code-block mt-2"><button class="copy-btn">Copy</button><pre><code class="language-bash">${code.trim()}</code></pre></div>`;
-        });
-
-        // Convert inline code blocks (backticks)
-        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-        // Convert bold text
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-        // Convert newlines to <br> for simple line breaks within text
-        html = html.replace(/\n/g, '<br>');
-
-        return html;
+// Basic Markdown to HTML converter
+function markdownToHtml(markdown) {
+    // Ensure markdown is a string before processing
+    if (typeof markdown !== 'string' || markdown === null) {
+        return '';
     }
 
-    // LLM Integration: SSL Troubleshooting Assistant
-    const troubleshootBtn = document.getElementById('troubleshoot-btn');
-    const troubleshootingPromptInput = document.getElementById('troubleshooting-prompt');
-    const troubleshootingOutputDiv = document.getElementById('troubleshooting-output');
-    const troubleshootingLoading = document.getElementById('troubleshooting-loading');
+    let html = markdown;
 
-    troubleshootBtn.addEventListener('click', async () => {
-        const promptText = troubleshootingPromptInput.value.trim();
-        if (!promptText) {
-            troubleshootingOutputDiv.classList.add('hidden');
-            alert('Please describe the SSL/TLS error or scenario.');
-            return;
-        }
+    // Handle multiline code blocks first to prevent inner backticks from being processed
+    html = html.replace(/```bash\n([\s\S]*?)```/g, (match, code) => {
+        return `<div class="code-block mt-2"><button class="copy-btn">Copy</button><pre><code class="language-bash">${code.trim()}</code></pre></div>`;
+    });
 
+    // Convert inline code blocks (backticks)
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Convert bold text
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Convert newlines to <br> for simple line breaks within text
+    html = html.replace(/\n/g, '<br>');
+
+    return html;
+}
+
+// LLM Integration: SSL Troubleshooting Assistant
+const troubleshootBtn = document.getElementById('troubleshoot-btn');
+const troubleshootingPromptInput = document.getElementById('troubleshooting-prompt');
+const troubleshootingOutputDiv = document.getElementById('troubleshooting-output');
+const troubleshootingLoading = document.getElementById('troubleshooting-loading');
+
+troubleshootBtn.addEventListener('click', async () => {
+    const promptText = troubleshootingPromptInput.value.trim();
+    if (!promptText) {
         troubleshootingOutputDiv.classList.add('hidden');
-        troubleshootingLoading.classList.remove('hidden');
+        alert('Please describe the SSL/TLS error or scenario.');
+        return;
+    }
 
-        try {
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: `As an expert SAP Basis consultant, provide possible causes and solutions for the following SSL/TLS error or scenario. Focus on practical steps relevant to SAP environments (ABAP, Java, Web Dispatcher). Provide the response in JSON format according to the following schema. The 'description' and 'content' fields can contain Markdown (e.g., **bold**, \`inline code\`, \`\`\`bash\\ncode\\n\`\`\`).
+    troubleshootingOutputDiv.classList.add('hidden');
+    troubleshootingLoading.classList.remove('hidden');
+
+    try {
+        let chatHistory = [];
+        chatHistory.push({ role: "user", parts: [{ text: `As an expert SAP Basis consultant, provide possible causes and solutions for the following SSL/TLS error or scenario. Focus on practical steps relevant to SAP environments (ABAP, Java, Web Dispatcher). Provide the response in JSON format according to the following schema. The 'description' and 'content' fields can contain Markdown (e.g., **bold**, \`inline code\`, \`\`\`bash\\ncode\\n\`\`\`).
 
 Schema:
 ${JSON.stringify(troubleshootingSchema, null, 2)}
 
 Error/Scenario: ${promptText}` }] });
-            const payload = {
-                contents: chatHistory,
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: troubleshootingSchema
-                }
-            };
-            // Call your Netlify Function proxy
-            const response = await fetch('/.netlify/functions/gemini-proxy', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+        const payload = {
+            contents: chatHistory,
+            generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: troubleshootingSchema
+            }
+        };
+        // Call your Netlify Function proxy
+        const response = await fetch('/.netlify/functions/gemini-proxy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        console.log('Troubleshooting Assistant - API Response Object:', response); // Log the full response object
+        const result = await response.json();
+        console.log('Troubleshooting Assistant - API Result JSON:', result); // Log the parsed JSON result
+
+        if (response.ok && result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            const jsonResponse = JSON.parse(result.candidates[0].content.parts[0].text);
+            console.log('Parsed JSON Response:', jsonResponse);
+
+            let formattedOutput = `<h4 class="font-bold text-slate-800">${jsonResponse.title ?? 'Troubleshooting Results'}</h4>`; // Use nullish coalescing for title
+
+            jsonResponse.sections.forEach(section => {
+                formattedOutput += `<h4 class="font-bold text-slate-800 mt-4">${section.heading ?? 'Unnamed Section'}:</h4>`; // Use nullish coalescing for heading
+                const listTag = section.type === 'ordered-list' ? 'ol' : 'ul';
+                const listClass = section.type === 'ordered-list' ? 'list-decimal' : 'list-disc';
+                formattedOutput += `<${listTag} class="${listClass} pl-5 mt-2 space-y-2">`;
+
+                section.items.forEach(item => {
+                    formattedOutput += `<li><strong>${item.title ?? 'Untitled Item'}:</strong> ${markdownToHtml(item.description ?? '')}`; // Use nullish coalescing for title and description
+                    if (item.sub_items && item.sub_items.length > 0) {
+                        formattedOutput += `<ul class="list-disc ml-4 mt-1 space-y-1">`;
+                        item.sub_items.forEach(subItem => {
+                            subItem.title = subItem.title ?? 'Untitled Sub-item'; // Ensure title is not null
+                            subItem.content = subItem.content ?? ''; // Ensure content is not null
+                            formattedOutput += `<li><strong>${subItem.title}:</strong> ${markdownToHtml(subItem.content)}</li>`; // Use nullish coalescing for title and content
+                        });
+                        formattedOutput += `</ul>`;
+                    }
+                    formattedOutput += `</li>`;
+                });
+                formattedOutput += `</${listTag}>`;
             });
 
-            console.log('Troubleshooting Assistant - API Response Object:', response); // Log the full response object
-            const result = await response.json();
-            console.log('Troubleshooting Assistant - API Result JSON:', result); // Log the parsed JSON result
-
-            if (response.ok && result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                const jsonResponse = JSON.parse(result.candidates[0].content.parts[0].text);
-                console.log('Parsed JSON Response:', jsonResponse);
-
-                let formattedOutput = `<h4 class="font-bold text-slate-800">${jsonResponse.title ?? 'Troubleshooting Results'}</h4>`; // Use nullish coalescing for title
-
-                jsonResponse.sections.forEach(section => {
-                    formattedOutput += `<h4 class="font-bold text-slate-800 mt-4">${section.heading ?? 'Unnamed Section'}:</h4>`; // Use nullish coalescing for heading
-                    const listTag = section.type === 'ordered-list' ? 'ol' : 'ul';
-                    const listClass = section.type === 'ordered-list' ? 'list-decimal' : 'list-disc';
-                    formattedOutput += `<${listTag} class="${listClass} pl-5 mt-2 space-y-2">`;
-
-                    section.items.forEach(item => {
-                        formattedOutput += `<li><strong>${item.title ?? 'Untitled Item'}:</strong> ${markdownToHtml(item.description ?? '')}`; // Use nullish coalescing for title and description
-                        if (item.sub_items && item.sub_items.length > 0) {
-                            formattedOutput += `<ul class="list-disc ml-4 mt-1 space-y-1">`;
-                            item.sub_items.forEach(subItem => {
-                                subItem.title = subItem.title ?? 'Untitled Sub-item'; // Ensure title is not null
-                                subItem.content = subItem.content ?? ''; // Ensure content is not null
-                                formattedOutput += `<li><strong>${subItem.title}:</strong> ${markdownToHtml(subItem.content)}</li>`; // Use nullish coalescing for title and content
-                            });
-                            formattedOutput += `</ul>`;
-                        }
-                        formattedOutput += `</li>`;
-                    });
-                    formattedOutput += `</${listTag}>`;
-                });
-
-                troubleshootingOutputDiv.innerHTML = formattedOutput;
-                troubleshootingOutputDiv.classList.remove('hidden');
-            } else if (!response.ok) {
-                troubleshootingOutputDiv.innerHTML = `<p class="text-sm text-red-600">Error: API request failed with status ${response.status} (${response.statusText}). Please check network or API service.`;
-                troubleshootingOutputDiv.classList.remove('hidden');
-            } else {
-                troubleshootingOutputDiv.innerHTML = '<p class="text-sm text-red-600">Error: Could not retrieve solutions. Unexpected API response structure. Check console for details.</p>';
-                troubleshootingOutputDiv.classList.remove('hidden');
-            }
-        } catch (error) {
-            console.error('Error calling Gemini API for troubleshooting:', error);
-            troubleshootingOutputDiv.innerHTML = `<p class="text-sm text-red-600">Error: Failed to connect or process API response. Details: ${error.message}. Please check your network or try again later.</p>`;
+            troubleshootingOutputDiv.innerHTML = formattedOutput;
             troubleshootingOutputDiv.classList.remove('hidden');
-        } finally {
-            troubleshootingLoading.classList.add('hidden');
+        } else if (!response.ok) {
+            troubleshootingOutputDiv.innerHTML = `<p class="text-sm text-red-600">Error: API request failed with status ${response.status} (${response.statusText}). Please check network or API service.`;
+            troubleshootingOutputDiv.classList.remove('hidden');
+        } else {
+            troubleshootingOutputDiv.innerHTML = '<p class="text-sm text-red-600">Error: Could not retrieve solutions. Unexpected API response structure. Check console for details.</p>';
+            troubleshootingOutputDiv.classList.remove('hidden');
         }
-    });
+    } catch (error) {
+        console.error('Error calling Gemini API for troubleshooting:', error);
+        troubleshootingOutputDiv.innerHTML = `<p class="text-sm text-red-600">Error: Failed to connect or process API response. Details: ${error.message}. Please check your network or try again later.</p>`;
+        troubleshootingOutputDiv.classList.remove('hidden');
+    } finally {
+        troubleshootingLoading.classList.add('hidden');
+    }
+});
 
 });
-    </script>
+</script>
 
 
 </body>
