@@ -4,6 +4,7 @@
   "description": "Comprehensive SSL Training for SAP Basis Consultants",
   "main": "index.html",
   "scripts": {
+    "build": "echo 'No specific build step for static HTML, but running npm install for functions...'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
