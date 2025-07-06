@@ -457,12 +457,12 @@
                     <h2><strong>I. Introduction to SSL/TLS Fundamentals</strong></h2>
                     <p class="lead text-lg">Secure communication protocols are indispensable in modern digital environments, forming the bedrock of trust and data protection across networks. This foundational module establishes a robust understanding of these protocols, tracing their historical evolution and delving into the cryptographic principles that underpin their functionality.</p>
                     
-                    <h3 id="intro-what-is">What are SSL/TLS Certificates?</h3>
+                    <h3 id="intro-what-is"><strong>What are SSL/TLS Certificates?</strong></h3>
                     <p>SSL/TLS certificates are digital documents that enable secure, encrypted communication over computer networks. Their core purpose is to provide privacy, data integrity, and authenticity. The evolution from the now-deprecated Secure Sockets Layer (SSL) to the modern Transport Layer Security (TLS) marks a critical progression in internet security. While "SSL" is often used colloquially, all modern secure connections use TLS, with versions 1.2 and 1.3 being the current standards.</p>
                     <p>TLS 1.3 represents a substantial advancement, streamlining the connection process (the "handshake") to reduce latency and removing support for older, vulnerable cryptographic algorithms. For SAP Basis consultants, this continuous evolution means security configurations are not static; they demand constant monitoring and planned upgrade cycles.</p>
                     <p>In SAP systems, SSL/TLS secures HTTP-based applications (e.g., SAP Fiori, Web Dynpro), REST/SOAP APIs, and internal communications (e.g., RFCs, Secure Network Communication [SNC]), protecting sensitive data such as financial transactions, user credentials, and business processes. Compliance with regulations like GDPR, PCI-DSS, and HIPAA mandates robust TLS implementations in SAP environments.</p>
 
-                    <h3 id="intro-crypto"><strong>Key Cryptographic Concepts</strong>strong></h3>
+                    <h3 id="intro-crypto"><strong>Key Cryptographic Concepts</strong></h3>
                     <p>Secure communication relies on a hybrid approach combining different cryptographic techniques:</p>
                     <div class="grid md:grid-cols-2 gap-6 mt-4">
                         <div class="bg-white p-6 rounded-lg border border-stone-200">
@@ -580,10 +580,10 @@
 
                 <!-- Section II -->
                 <section id="handshake" class="content-section prose max-w-none prose-slate">
-                    <h2>II. The SSL/TLS Handshake in Detail</h2>
+                    <h2><strong>II. The SSL/TLS Handshake in Detail</strong></h2>
                     <p class="lead text-lg">The TLS handshake establishes a secure session between a client (e.g., browser, SAP GUI) and a server (e.g., SAP NetWeaver), negotiating cryptographic parameters, authenticating identities, and generating session keys. This section details the TLS 1.2 handshake (RFC 5246), widely used in SAP systems, with a focus on client-server dialogues and response codes.</p>
 
-                    <h3 id="handshake-tls12">TLS 1.2 Handshake Process</h3>
+                    <h3 id="handshake-tls12"><strong>TLS 1.2 Handshake Process</strong></h3>
                     <div class="bg-white p-6 rounded-lg border border-stone-200 mt-4 not-prose">
                         <div class="relative flex items-center justify-between p-4 min-h-[600px]"> <!-- Increased min-height -->
                             <!-- Client -->
@@ -665,7 +665,7 @@
                         </div>
                     </div>
 
-                    <h3 id="handshake-tls13" class="mt-8">TLS 1.3 Handshake Enhancements</h3>
+                    <h3 id="handshake-tls13" class="mt-8"><strong>TLS 1.3 Handshake Enhancements</strong></h3>
                     <p>TLS 1.3 significantly improves on this process by being faster and more secure:</p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
                         <li><strong>Streamlined Handshake:</strong> It dramatically reduces the number of round trips required to establish a secure connection, leading to faster connection establishment and reduced latency.</li>
@@ -675,7 +675,7 @@
                         <li><strong>Mandatory Perfect Forward Secrecy (PFS):</strong> All cipher suites supported in TLS 1.3 inherently include Perfect Forward Secrecy.</li>
                     </ul>
                     
-                    <h3 id="handshake-live" class="mt-8">Practical: SSL Certificate Viewer & Connection Simulator</h3>
+                    <h3 id="handshake-live" class="mt-8"><strong>Practical: SSL Certificate Viewer & Connection Simulator</strong></h3>
                     <p>This tool simulates a connection to a web server to analyze its SSL/TLS configuration or report connection errors. Enter a URL (e.g., `https://www.google.com`, `http://example.com`, `https://expired.badssl.com`) and click "Get Details" to see what a real analysis would reveal. This provides a practical look at how different servers are configured and how errors manifest.</p>
                     <div class="bg-white p-6 rounded-lg border border-stone-200 mt-4 not-prose">
                         <div class="flex flex-col sm:flex-row gap-2">
@@ -694,10 +694,10 @@
                 
                 <!-- Section III -->
                 <section id="formats" class="content-section prose max-w-none prose-slate">
-                    <h2>III. Understanding Certificate Formats and Use Cases</h2>
+                    <h2><strong>III. Understanding Certificate Formats and Use Cases</strong></h2>
                      <p class="lead text-lg">Certificates and keys come in a variety of file formats, which can be a common source of confusion. Understanding the difference between formats like PEM, DER, and PFX is crucial for correct implementation in different SAP components and for interoperability between systems.</p>
 
-                    <h3 id="formats-common">Common Certificate & Key Formats</h3>
+                    <h3 id="formats-common"><strong>Common Certificate & Key Formats</strong></h3>
                     <table class="table w-full text-left border-collapse mt-4">
                         <thead>
                             <tr>
@@ -761,7 +761,7 @@
                         </tbody>
                     </table>
 
-                    <h3 id="formats-stores" class="mt-8">Key Stores and Certificate Bundles</h3>
+                    <h3 id="formats-stores" class="mt-8"><strong>Key Stores and Certificate Bundles</strong></h3>
                      <div class="grid md:grid-cols-2 gap-6 mt-4 not-prose">
                         <div class="bg-white p-6 rounded-lg border border-stone-200">
                             <h4 class="font-semibold text-slate-800">PKCS#12 (.pfx, .p12)</h4>
@@ -773,7 +773,7 @@
                         </div>
                     </div>
                     
-                    <h3 id="formats-conversions" class="mt-8">Certificate Format Conversions (using OpenSSL)</h3>
+                    <h3 id="formats-conversions" class="mt-8"><strong>Certificate Format Conversions (using OpenSSL)</strong></h3>
                     <p>OpenSSL is a powerful command-line tool for cryptographic operations, including certificate format conversions. These conversions are critical for ensuring compatibility across different platforms and SAP components.</p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
                         <li><strong>PFX to PEM</strong>: Extracts certificate and private key from a PFX file into PEM format. The `-nodes` option ensures the private key is not encrypted.
@@ -797,7 +797,7 @@
                     </ul>
                     <p class="mt-4"><strong>Practical Exercise:</strong> Convert a PFX file to PEM using OpenSSL, import it into a `SAPSSLS.pse` using `sapgenpse`, and verify the certificate details with `sapgenpse get_my_name -p SAPSSLS.pse -v`.</p>
 
-                    <h3 id="formats-sap" class="mt-8">When to use which format in SAP</h3>
+                    <h3 id="formats-sap" class="mt-8"><strong>When to use which format in SAP</strong></h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse mt-4">
                             <thead>
@@ -831,7 +831,7 @@
                 
                 <!-- Section IV -->
                 <section id="sap-specifics" class="content-section prose max-w-none prose-slate">
-                    <h2>IV. SAP-Specific SSL Certificate Management</h2>
+                    <h2><strong>IV. SAP-Specific SSL Certificate Management</strong></h2>
                     <p class="lead text-lg">SAP has its own unique ecosystem for managing cryptographic information. This module covers the core components: the Personal Security Environment (PSE), the essential SAP Cryptographic Library, and the powerful `sapgenpse` command-line tool, which is a must-know for every Basis consultant.</p>
 
                     <h3 id="sap-pse">SAP Personal Security Environment (PSE) & SAP Cryptographic Library</h3>
@@ -845,13 +845,13 @@
                     </ul>
                     <p class="mt-4">The functionality of these PSEs is powered by the <strong>SAP Cryptographic Library (CommonCryptoLib)</strong>, successor to SAPCRYPTOLIB. This library provides all the encryption and digital signature functions. It supports algorithms like RSA, ECDSA, AES, and SHA-256/384, is FIPS 140-2 certified, and integrates with hardware security modules (HSMs). It is a mandatory prerequisite for using `sapgenpse` and enabling SSL/TLS. You must ensure it is installed, up-to-date (by checking SAP Notes like <a href="https://launchpad.support.sap.com/#/notes/2809914" target="_blank" class="text-blue-600 hover:underline">SAP Note 2809914</a>), and that the <code>SECUDIR</code> environment variable correctly points to its location (typically `/usr/sap/<SID>/SYS/exe/run/`).</p>
 
-                    <h3 id="sap-sapgenpse" class="mt-8">The `sapgenpse` Command-Line Tool: An Interactive Explorer</h3>
+                    <h3 id="sap-sapgenpse" class="mt-8"><strong>The `sapgenpse` Command-Line Tool: An Interactive Explorer</strong></h3>
                     <p>The `sapgenpse` tool is a powerful command-line utility for creating and managing PSEs, certificates, and credentials. It's essential for automation and for situations where GUI access (STRUST) is unavailable. Run `sapgenpse -h` for comprehensive help. Click on a command below to see its purpose, syntax, and a practical example.</p>
                     <div id="sapgenpse-accordion" class="space-y-2 mt-4 not-prose">
                         <!-- Accordion items will be injected here by JS -->
                     </div>
                     
-                    <h3 id="sap-genpse-llm" class="mt-8">✨ `sapgenpse` Command Generator</h3>
+                    <h3 id="sap-genpse-llm" class="mt-8"><strong>✨ `sapgenpse` Command Generator</strong></h3>
                     <p>Describe what you want to achieve with `sapgenpse` in plain English, and the Gemini API will generate the appropriate command for you. If it's unsure, it will provide a relevant section from the `sapgenpse -h` help output.</p>
                     <div class="bg-white p-6 rounded-lg border border-stone-200 mt-4 not-prose">
                         <textarea id="sapgenpse-prompt" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent min-h-[80px]" placeholder="e.g., Generate a CSR for my web dispatcher with SANs for webdisp.example.com and wd.example.com"></textarea>
@@ -866,7 +866,7 @@
                         </div>
                     </div>
 
-                    <h3 id="sap-renewal" class="mt-8">Certificate Renewal Process</h3>
+                    <h3 id="sap-renewal" class="mt-8"><strong>Certificate Renewal Process</strong></h3>
                     <p>Proactive certificate renewal is critical to avoid service outages. An expired certificate will immediately cause connection failures.</p>
                      <p><strong>Best Practices:</strong></p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
@@ -892,10 +892,10 @@ sapgenpse get_my_name -p SAPSSLS.pse -v -x mypin
 
                 <!-- Section V: SSL/TLS Configuration in SAP Systems (Moved from VII) -->
                 <section id="config" class="content-section prose max-w-none prose-slate">
-                     <h2>V. SSL/TLS Configuration in SAP Systems</h2>
+                     <h2><strong>V. SSL/TLS Configuration in SAP Systems</strong></h2>
                      <p class="lead text-lg">Configuring SSL/TLS is a core task for a Basis consultant. The process differs significantly between the ABAP stack, the Java stack, and the SAP Web Dispatcher. This section provides a practical overview of the tools and key steps for each environment.</p>
 
-                    <h3 id="config-abap">SAP ABAP Stack (STRUST)</h3>
+                    <h3 id="config-abap"><strong>SAP ABAP Stack (STRUST)</strong></h3>
                     <p>The <strong>Trust Manager (transaction <code>STRUST</code>)</strong> is the primary GUI for managing PSEs and certificates in the ABAP stack.</p>
                     <h4 class="font-semibold text-slate-800 mt-4">Prerequisites:</h4>
                     <ul class="list-disc pl-5 mt-2 space-y-1">
@@ -929,7 +929,7 @@ ssl/client_ciphersuites = 150:PFS:HIGH::EC_P256:EC_HIGH # For outbound connectio
                     </ol>
                     <p class="mt-4"><strong>Practical Exercise:</strong> Generate a CSR in STRUST, import a signed certificate, and configure ICM to enable HTTPS. Test the endpoint using `curl -v https://<server>:8443/sap/public/ping` and analyze the response to confirm TLS version and cipher suite.</p>
 
-                     <h3 id="config-java" class="mt-8">SAP Java Stack (NWA Key Storage)</h3>
+                     <h3 id="config-java" class="mt-8"><strong>SAP Java Stack (NWA Key Storage)</strong></h3>
                     <p>In SAP Java systems, certificate management is done via the <strong>NetWeaver Administrator (NWA)</strong>, specifically in the "Key Storage" service.</p>
                     <h4 class="font-semibold text-slate-800 mt-4">Prerequisites:</h4>
                     <ul class="list-disc pl-5 mt-2 space-y-1">
@@ -990,7 +990,7 @@ ssl/ciphersuites = 135:PFS:HIGH::EC_P256:EC_HIGH
                     </ol>
                     <p class="mt-4"><strong>Practical Exercise:</strong> Configure HTTPS in NWA, import a P12 file into the Java keystore, and verify HTTP-to-HTTPS redirection using a browser. Test cipher suite compatibility: `openssl s_client -connect <host>:5<instance_number>01 -tls1_2`.</p>
 
-                    <h3 id="config-web" class="mt-8">SAP Web Dispatcher</h3>
+                    <h3 id="config-web" class="mt-8"><strong>SAP Web Dispatcher</strong></h3>
                     <p>The SAP Web Dispatcher acts as a reverse proxy and is a critical point for SSL/TLS configuration. It can either pass through encrypted traffic or terminate it.</p>
                     <h4 class="font-semibold text-slate-800 mt-4">Prerequisites:</h4>
                     <ul class="list-disc pl-5 mt-2 space-y-1">
@@ -1032,7 +1032,7 @@ ssl/ciphersuites = 135:PFS:HIGH::EC_P256:EC_HIGH
                     </div>
                     <p class="mt-4"><strong>Practical Exercise:</strong> Configure SSL termination in Web Dispatcher using `sapgenpse`, then verify access via <a href="https://<webdispatcher>:443" target="_blank" class="text-blue-600 hover:underline">https://&lt;webdispatcher&gt;:443</a>. Test mutual TLS by configuring a client PSE and enabling `icm/HTTPS/verify_client=1`.</p>
 
-                    <h3 id="icm-flow-diagram" class="mt-8">ICM Communication Flow & Unified Certificate Management</h3>
+                    <h3 id="icm-flow-diagram" class="mt-8"><strong>ICM Communication Flow & Unified Certificate Management</strong></h3>
                     <p>Understanding the flow of HTTPS communication through an SAP landscape, especially with Web Dispatchers, is crucial for effective SSL/TLS management. This diagram illustrates a common scenario and how certificates are applied.</p>
                     <div class="combined-flow-diagram-container not-prose">
                         <!-- Diagram 1: Client to SAP System (SAP as Server) -->
@@ -1240,10 +1240,10 @@ sapcontrol -nr <instance_number> -function Restart</code></pre>
 
                 <!-- Section VI: RFC Gateway (Moved from V) -->
                 <section id="rfc-gateway" class="content-section prose max-w-none prose-slate">
-                    <h2>VI. SAP RFC Gateway: Architecture and Security</h2>
+                    <h2><strong>VI. SAP RFC Gateway: Architecture and Security</strong></h2>
                     <p class="lead text-lg">The SAP RFC Gateway is a critical component in the SAP NetWeaver architecture, acting as a communication hub for Remote Function Calls (RFCs) between SAP systems, and between SAP and external programs. Understanding its architecture, functions, and security mechanisms is paramount for Basis consultants to ensure reliable and secure integration.</p>
 
-                    <h3 id="rfc-overview">RFC Gateway Overview and Technical Communications</h3>
+                    <h3 id="rfc-overview"><strong>RFC Gateway Overview and Technical Communications</strong></h3>
                     <p>The RFC Gateway (often referred to simply as "Gateway" or `gwrd` process) is an integral part of the SAP NetWeaver Application Server, primarily responsible for managing communication based on the RFC protocol. It acts as an intermediary, facilitating connections between:</p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
                         <li>SAP application servers (ABAP to ABAP, ABAP to Java).</li>
@@ -1269,7 +1269,7 @@ sapcontrol -nr <instance_number> -function Restart</code></pre>
                     </ol>
                     <p>The Gateway manages a pool of RFC connections and processes, ensuring efficient resource utilization and handling concurrent requests. It also provides basic load balancing capabilities for registered external programs.</p>
 
-                    <h3 id="rfc-tp-rfcexec">TP and `rfcexec` Programs</h3>
+                    <h3 id="rfc-tp-rfcexec"><strong>TP and `rfcexec` Programs</strong></h3>
                     <p>When an SAP system needs to execute an external program via RFC, it typically involves two key components: the `TP` (Transaction Program) and `rfcexec`.</p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
                         <li><strong>TP (Transaction Program):</strong> This refers to the external program itself that is registered with the SAP Gateway. When an RFC call is made from SAP to execute an external program, the Gateway looks for a registered `TP` name. This `TP` name is a logical identifier for the external program.</li>
@@ -1292,7 +1292,7 @@ rfcexec -a <TP_Name> -g <Gateway_Host> -x <Gateway_Service> -f <External_Program
                         <li>The output/return code from the external program is sent back via `rfcexec` to the Gateway, and then to the SAP system.</li>
                     </ol>
 
-                    <h3 id="rfc-security-files">Security Files (`reginfo`, `secinfo`, `prxyinfo`, `ms_acl`)</h3>
+                    <h3 id="rfc-security-files"><strong>Security Files (`reginfo`, `secinfo`, `prxyinfo`, `ms_acl`)</strong></h3>
                     <p>Here's a clear, detailed breakdown of the SAP RFC Gateway—its TCP communications and the key ACL files: `reginfo`, `secinfo`, `prxyinfo`, and `ms_acl`—including correct file formats, wildcard usage, and security context.</p>
 
                     <h4 class="font-semibold text-slate-800 mt-4">1. RFC Gateway Architecture & TCP Communication</h4>
@@ -1506,10 +1506,10 @@ D HOST=*</code></pre>
 
                 <!-- Section VII: SNC SSO (Moved from VI) -->
                 <section id="snc-sso" class="content-section prose max-w-none prose-slate">
-                    <h2>VII. Secure Network Communications (SNC) & SSO</h2>
+                    <h2><strong>VII. Secure Network Communications (SNC) & SSO</strong></h2>
                     <p class="lead text-lg">Secure Network Communications (SNC) provides an application-level security layer for SAP systems, enabling encryption and single sign-on (SSO) for various SAP components. It's crucial for securing internal SAP communication and integrating with enterprise identity management solutions like Microsoft Active Directory.</p>
 
-                    <h3 id="snc-overview">SNC Overview</h3>
+                    <h3 id="snc-overview"><strong>SNC Overview</strong></h3>
                     <p>SNC is a software layer in the SAP system architecture that provides security functions such as authentication, encryption, and data integrity for communication between SAP components (e.g., SAP GUI to ABAP, ABAP to ABAP RFC, ABAP to Java) and between SAP systems and external applications.</p>
                     <p>SNC uses an external security product (like CommonCryptoLib, or third-party GSS-API compliant products) to provide these security services. It operates at the application layer, meaning it secures the data *before* it is passed to the network layer, providing end-to-end security within the SAP landscape.</p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
@@ -1519,7 +1519,7 @@ D HOST=*</code></pre>
                         <li><strong>Single Sign-On (SSO):</strong> Allows users to log into SAP systems without re-entering credentials, leveraging existing enterprise authentication mechanisms (e.g., Kerberos with Active Directory).</li>
                     </ul>
 
-                    <h3 id="snc-config">SNC Configuration Steps</h3>
+                    <h3 id="snc-config"><strong>SNC Configuration Steps</strong></h3>
                     <p>Configuring SNC involves several steps, including setting up the cryptographic library, generating PSEs, and configuring profile parameters.</p>
                     <h4 class="font-semibold text-slate-800 mt-4">Prerequisites:</h4>
                     <ul class="list-disc pl-5 mt-2 space-y-1">
@@ -1563,7 +1563,7 @@ login/accept_sso_ticket = 1    # Accept SSO tickets
                         <li><strong>Restart SAP System:</strong> A full SAP system restart is usually required for SNC profile parameters to take effect.</li>
                     </ol>
 
-                    <h3 id="snc-ad-sso">SNC with Active Directory for SSO</h3>
+                    <h3 id="snc-ad-sso"><strong>SNC with Active Directory for SSO</strong></h3>
                     <p>Integrating SNC with Microsoft Active Directory (AD) enables Single Sign-On (SSO) for SAP GUI users, leveraging Kerberos authentication. This allows users to log into SAP without re-entering their credentials, using their existing Windows login.</p>
                     <h4 class="font-semibold text-slate-800 mt-4">Key Concepts for AD Integration:</h4>
                     <ul class="list-disc pl-5 mt-2 space-y-2">
@@ -1613,10 +1613,10 @@ setspn -Q SAP/<SAP_Service_Name></code></pre>
                 
                  <!-- Section VIII: Web Services (Moved from VIII) -->
                 <section id="web-services" class="content-section prose max-w-none prose-slate">
-                    <h2>VIII. SAP Web Services and ICM Services</h2>
+                    <h2><strong>VIII. SAP Web Services and ICM Services</strong></h2>
                     <p class="lead text-lg">SAP systems leverage various services and tools to enable web-based communication and integrate with other systems. Understanding the roles of SICF, SOAMANAGER, SPROXY, and the `HTTPURLLOC` table is crucial for Basis consultants managing modern SAP landscapes.</p>
 
-                    <h3 id="sicf">SICF (Internet Communication Framework)</h3>
+                    <h3 id="sicf"><strong>SICF (Internet Communication Framework)</strong></h3>
                     <p>The **Internet Communication Framework (ICF)** is a fundamental component of the SAP NetWeaver Application Server (ABAP stack) that enables HTTP, HTTPS, and SMTP communication. **SICF (Service Creation and Maintenance)** is the transaction code used to manage and activate ICF services.</p>
                     <p><strong>What it is:</strong> SICF acts as a central registry for all HTTP(S) services provided by the ABAP stack. These services can be anything from web dynpro applications, OData services for Fiori, SOAP web services, or custom HTTP handlers. Each service in SICF corresponds to a specific URL path and is associated with an ABAP class that handles the incoming requests.</p>
                     <p><strong>Functions:</strong></p>
@@ -1645,7 +1645,7 @@ setspn -Q SAP/<SAP_Service_Name></code></pre>
 # 4. Confirm activation of sub-nodes if prompted.</code></pre>
                     </div>
 
-                    <h3 id="soamanager-sproxy">SOAMANAGER and SPROXY (Web Services Management)</h3>
+                    <h3 id="soamanager-sproxy"><strong>SOAMANAGER and SPROXY (Web Services Management)</strong></h3>
                     <p>These transactions are central to managing and consuming **SOAP-based Web Services** in SAP ABAP systems.</p>
                     <p><strong>SOAMANAGER (SOA Management):</strong></p>
                     <ul class="list-disc pl-5 mt-2 space-y-1">
@@ -1686,7 +1686,7 @@ setspn -Q SAP/<SAP_Service_Name></code></pre>
                         </li>
                     </ul>
 
-                    <h3 id="httpurlloc">HTTPURLLOC Table and its Purpose</h3>
+                    <h3 id="httpurlloc"><strong>HTTPURLLOC Table and its Purpose</strong></h3>
                     <p>The `HTTPURLLOC` table is a crucial configuration table in SAP ABAP systems that stores the **external URLs** used by the system for various purposes, particularly for generating URLs that are accessed by external clients or systems. It plays a significant role in ensuring that SAP generates correct and accessible URLs, especially in complex landscapes involving Web Dispatchers or reverse proxies.</p>
                     <p><strong>Purpose:</strong></p>
                     <ul class="list-disc pl-5 mt-2 space-y-1">
@@ -1728,10 +1728,10 @@ setspn -Q SAP/<SAP_Service_Name></code></pre>
 
                 <!-- Section IX: Advanced Topics (Moved from IX) -->
                 <section id="advanced-topics" class="content-section prose max-w-none prose-slate">
-                     <h2>IX. Advanced Topics</h2>
+                     <h2><strong>IX. Advanced Topics</strong></h2>
                      <p class="lead text-lg">Beyond basic configuration, advanced topics in SAP SSL/TLS management include integrating with Hardware Security Modules (HSMs) for enhanced key protection, optimizing performance for high-volume systems, and adhering to comprehensive security best practices.</p>
 
-                    <h3 id="advanced-hsm" class="mt-8">Hardware Security Module (HSM) Integration</h3>
+                    <h3 id="advanced-hsm" class="mt-8"><strong>Hardware Security Module (HSM) Integration</strong></h3>
                     <p>CommonCryptoLib supports HSMs for secure private key storage and cryptographic operations, significantly enhancing security posture for critical SAP systems. HSMs protect private keys from software-based attacks and provide FIPS-compliant hardware security.</p>
                     <h4 class="font-semibold text-slate-800 mt-4">Configuration Steps:</h4>
                     <ol class="list-decimal pl-5 mt-2 space-y-2">
@@ -1747,7 +1747,7 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
                         <li>Verify HSM integration: `sapgenpse get_my_name -p SAPSSLS.pse -v` (output should indicate HSM usage).</li>
                     </ol>
 
-                    <h3 id="advanced-performance" class="mt-8">Performance Optimization</h3>
+                    <h3 id="advanced-performance" class="mt-8"><strong>Performance Optimization</strong></h3>
                     <p>Optimizing SSL/TLS performance is crucial for high-volume SAP systems. Key strategies include:</p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
                         <li><strong>Cipher Suite Selection:</strong> Prioritize modern, efficient cipher suites like those using ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) for key exchange and AES-GCM for encryption (e.g., `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`). These offer strong security with better performance than older RSA-based key exchanges.</li>
@@ -1761,7 +1761,7 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
                         <li><strong>Web Dispatcher Pooling:</strong> For Web Dispatcher, enable connection pooling for SSL re-encryption using `wdisp/HTTP/use_pool_for_new_conn = 1` to reuse established backend connections.</li>
                     </ul>
 
-                    <h3 id="advanced-best-practices" class="mt-8">Security Best Practices</h3>
+                    <h3 id="advanced-best-practices" class="mt-8"><strong>Security Best Practices</strong></h3>
                     <p>Maintaining a strong SSL/TLS security posture in SAP requires continuous vigilance and adherence to best practices:</p>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
                         <li><strong>Enforce Modern TLS Versions:</strong> Actively disable older, vulnerable TLS versions (TLS 1.0/1.1) and weak cipher suites (e.g., those using CBC mode, MD5, RC4, 3DES). Prioritize TLS 1.2 and 1.3 where supported by SAP kernel and CommonCryptoLib.</li>
@@ -1775,16 +1775,16 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
 
                 <!-- Section X: Troubleshooting & Diagnostics (Moved from X) -->
                 <section id="troubleshooting-final" class="content-section prose max-w-none prose-slate">
-                     <h2>X. Troubleshooting & Diagnostics</h2>
+                     <h2><strong>X. Troubleshooting & Diagnostics</strong></h2>
                      <p class="lead text-lg">Effective troubleshooting of SSL/TLS issues in SAP environments requires a systematic approach and a deep understanding of common error patterns. This module equips consultants with the knowledge to diagnose and resolve frequently encountered problems across SAP ABAP, Java, and Web Dispatcher environments.</p>
 
-                    <h3 id="troubleshooting-common" class="mt-8">Common SSL/TLS Issues and Resolutions</h3>
+                    <h3 id="troubleshooting-common" class="mt-8"><strong>Common SSL/TLS Issues and Resolutions</strong></h3>
                     <ul class="list-disc pl-5 mt-4 space-y-2">
                         <li><strong>Certificate Expired, Inactive, or Untrusted</strong>:
                             <ul class="list-disc pl-5 mt-2 space-y-1">
                                 <li><strong>Symptom:</strong> Browser errors like "Your connection is not private", `NET::ERR_CERT_DATE_INVALID`, or `SSL Peer Certificate Untrusted` in SAP logs.</li>
                                 <li><strong>Cause:</strong> Certificate has expired, is not yet valid, or its issuing CA is not trusted by the client/SAP system. Incomplete certificate chain.</li>
-                                <li><strong>Solution:</b> Renew promptly. Verify validity dates and synchronize system clocks. Import the <strong>entire CA chain</strong> (intermediate and root certificates) into relevant trust stores (STRUST for ABAP, NWA Key Storage for Java). Use `sapgenpse maintain_pk -a <cert_file>` to add missing CAs.</li>
+                                <li><strong>Solution:</strong> Renew promptly. Verify validity dates and synchronize system clocks. Import the <strong>entire CA chain</strong> (intermediate and root certificates) into relevant trust stores (STRUST for ABAP, NWA Key Storage for Java). Use `sapgenpse maintain_pk -a <cert_file>` to add missing CAs.</li>
                             </ul>
                         </li>
                         <li><strong>Certificate Name Mismatches (Common Name vs. SANs)</strong>:
@@ -1822,7 +1822,7 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
                         </li>
                     </ul>
 
-                    <h3 id="troubleshooting-llm" class="mt-8">✨ SSL Troubleshooting Assistant</h3>
+                    <h3 id="troubleshooting-llm" class="mt-8"><strong>✨ SSL Troubleshooting Assistant</strong></h3>
                     <p>Describe an SSL/TLS error or scenario you are facing, and the Gemini API will provide possible causes and solutions relevant to SAP environments.</p>
                     <div class="bg-white p-6 rounded-lg border border-stone-200 mt-4 not-prose">
                         <textarea id="troubleshooting-prompt" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent min-h-[120px]" placeholder="e.g., We are getting 'SSL handshake failed' errors when connecting from our ABAP system to an external REST API."></textarea>
@@ -1839,7 +1839,7 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
 
                 <!-- Section XI: Conclusion (Moved from XI) -->
                 <section id="conclusion" class="content-section prose max-w-none prose-slate">
-                    <h2>XI. Conclusions and Recommendations</h2>
+                    <h2><strong>XI. Conclusions and Recommendations</strong></h2>
                     <p class="lead text-lg">The comprehensive analysis of SSL/TLS certificates for professional SAP Basis consultants reveals a critical landscape where foundational cryptographic principles intersect with complex, platform-specific implementations. The training presented in this application aims to equip consultants with not only the theoretical knowledge but also the practical expertise necessary to navigate this intricate domain.</p>
 
                     <p>Several key areas warrant particular attention and form the basis of actionable recommendations:</p>
