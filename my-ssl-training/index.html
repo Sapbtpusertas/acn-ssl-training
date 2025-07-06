@@ -2036,6 +2036,7 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
                 const url = liveUrlInput.value.trim();
                 resultsContainer.innerHTML = `<div class="text-center p-4"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto"></div><p class="mt-2">Simulating connection to ${url}...</p></div>`;
 
+
                 setTimeout(() => {
                     let outputHtml = '';
                     if (!url) {
@@ -2111,26 +2112,27 @@ ssl/hsm_device = <device_name> # e.g., "token_name"</code></pre>
                             <div class="border rounded-lg p-4 bg-red-50">
                                 <h4 class="font-bold text-red-800">Error: Hostname Mismatch</h4>
                                 <p class="mt-2 text-sm">The hostname in the URL (\`wrong.host.badssl.com\`) does not match the Common Name (CN) or any Subject Alternative Names (SANs) in the server's certificate. This is a common issue for misconfigured certificates.</p>
-                            <p class="text-sm"><strong>Certificate Details:</strong></p>
-                            <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Intermediate Certificate Authority, O=BadSSL</p>
-                            <p class="text-sm"><strong>Subject:</strong> CN=badssl.com, O=BadSSL</p>
-                            <p class="text-sm"><strong>Valid From:</strong> 2020-01-01 00:00:00 UTC</p>
-                            <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
-                            <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_COMMON_NAME_INVALID</p>
-                            <p class="mt-2 text-sm"><strong>Suggested Action:</strong> Ensure the certificate's CN or SANs exactly match the hostname used in the URL. Regenerate the CSR with correct SANs if needed.</p>
-                        </div>`;
-                }
-                else {
-                     outputHtml = `
-                        <div class="border rounded-lg p-4 bg-amber-50">
-                            <h4 class="font-bold text-amber-800">ⓘ Simulation Notice</h4>
-                            <p class="mt-2 text-sm">This is a simulated analysis for <strong>${url}</strong>. A real-world test would probe the server's configuration and display its actual TLS version, cipher suites, and full certificate chain for inspection, which is invaluable for troubleshooting connection issues.</p>
-                            <p class="mt-2 text-sm">Try examples like: \`https://www.google.com\`, \`http://example.com\`, \`https://expired.badssl.com\`, \`https://untrusted-root.badssl.com\`, \`https://wrong.host.badssl.com\`.</p>
-                        </div>`;
-                }
-                resultsContainer.innerHTML = outputHtml;
-            }, 1500);
-        });
+                                <p class="mt-2 text-sm"><strong>Certificate Details:</strong></p>
+                                <p class="text-sm"><strong>Issuer:</strong> CN=BadSSL Intermediate Certificate Authority, O=BadSSL</p>
+                                <p class="text-sm"><strong>Subject:</strong> CN=badssl.com, O=BadSSL</p>
+                                <p class="text-sm"><strong>Valid From:</strong> 2020-01-01 00:00:00 UTC</p>
+                                <p class="text-sm"><strong>Valid To:</strong> 2025-01-01 23:59:59 UTC</p>
+                                <p class="text-sm"><strong>Error Code:</strong> NET::ERR_CERT_COMMON_NAME_INVALID</p>
+                                <p class="mt-2 text-sm"><strong>Suggested Action:</strong> Ensure the certificate's CN or SANs exactly match the hostname used in the URL. Regenerate the CSR with correct SANs if needed.</p>
+                            </div>`;
+                    }
+                    else {
+                         outputHtml = `
+                            <div class="border rounded-lg p-4 bg-amber-50">
+                                <h4 class="font-bold text-amber-800">ⓘ Simulation Notice</h4>
+                                <p class="mt-2 text-sm">This is a simulated analysis for <strong>${url}</strong>. A real-world test would probe the server's configuration and display its actual TLS version, cipher suites, and full certificate chain for inspection, which is invaluable for troubleshooting connection issues.</p>
+                                <p class="mt-2 text-sm">Try examples like: \`https://www.google.com\`, \`http://example.com\`, \`https://expired.badssl.com\`, \`https://untrusted-root.badssl.com\`, \`https://wrong.host.badssl.com\`.</p>
+                            </div>`;
+                    }
+                    resultsContainer.innerHTML = outputHtml;
+                }, 1500);
+            });
+
         
         const sapgenpseCommands = [
             {
