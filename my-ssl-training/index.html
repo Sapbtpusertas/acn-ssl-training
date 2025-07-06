@@ -2332,7 +2332,7 @@ Subject Alternative Name (SAN) Types:
 
     // Declare apiKey and geminiApiUrl once in the outer scope of the DOMContentLoaded listener
     // IMPORTANT: API key embedded as requested.
-    const apiKey = "AIzaSyDAWS3zICYBz1qKg3Gpm7Zpm_-b-EAa7_A"; 
+    const apiKey = process.env.YOUR_API_KEY; // This line attempts to read the environment variable
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
 
