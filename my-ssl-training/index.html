@@ -2367,7 +2367,7 @@ ${sapgenpseHelpText}
 ---
 ` }] });
             const payload = { contents: chatHistory };
-            const response = await fetch(geminiApiUrl, {
+            const response = await fetch('/.netlify/functions/gemini-proxy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -2506,7 +2506,7 @@ Error/Scenario: ${promptText}` }] });
                     responseSchema: troubleshootingSchema
                 }
             };
-            const response = await fetch(geminiApiUrl, {
+            const response = await fetch('/.netlify/functions/gemini-proxy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
