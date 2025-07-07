@@ -885,6 +885,7 @@
 sapgenpse import_own_cert -p SAPSSLS.pse -c new_cert.crt -r ca-bundle.crt -x mypin
 # Verify the imported certificate
 sapgenpse get_my_name -p SAPSSLS.pse -v -x mypin
+# For ASCS/SCS: Restart the service
 # For ABAP: Restart ICM via SMICM -> Admin -> ICM -> Restart -> Yes
 # For Java: Restart J2EE engine via sapcontrol -nr <instance_number> -function Restart
 # For Web Dispatcher: Restart Web Dispatcher via sapcontrol -nr <instance_number> -function Restart</code></pre>
@@ -1225,9 +1226,12 @@ sapgenpse import_own_cert -p SAPSSLS_JAVA.pse -c signed_jpr_java_cert.crt -r ca_
                             <p>For systems that are not highly available (HA), a restart of the relevant SAP instances (ICM for ABAP, J2EE engine for Java, Web Dispatcher process) is required for the new certificates to take effect. In HA environments, rolling restarts can be performed to minimize downtime.</p>
                             <div class="code-block mt-2">
                                 <button class="copy-btn">Copy</button>
-                                <pre><code class="language-bash"># For ABAP ICM restart:
-sapcontrol -nr <instance_number> -function RestartService
+                                <pre><code class="language-bash"># For ASCS/SCS restart:
+sapcontrol -nr <instance_number> -function Restart
 
+# For ABAP ICM restart:
+sapcontrol -nr <instance_number> -function Restart
+    
 # For Java J2EE engine restart:
 sapcontrol -nr <instance_number> -function Restart
 
